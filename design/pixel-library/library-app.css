@@ -122,6 +122,7 @@ main{max-width:1280px;margin:auto;padding:34px 24px 80px;outline:none}
 .hero-art{position:relative;min-height:260px;-webkit-mask-image:linear-gradient(to left,transparent 0,#000 26%);mask-image:linear-gradient(to left,transparent 0,#000 26%)}
 html[dir=ltr] .hero-art{-webkit-mask-image:linear-gradient(to right,transparent 0,#000 26%);mask-image:linear-gradient(to right,transparent 0,#000 26%)}
 .hero-scene{position:absolute;inset:0;width:100%;height:100%}
+.art-floor{position:absolute;inset-inline-start:30%;inset-inline-end:5%;bottom:20%;height:2px;pointer-events:none}
 html[dir=rtl] .hero-scene{transform:scaleX(-1)} /* Window and moon stay clear of the fade beside the copy. */
 .hero-scene .star{animation:twinkle 3.2s steps(2,end) infinite}
 .hero-scene .s1{animation-delay:-.8s}.hero-scene .s2{animation-delay:-1.6s}.hero-scene .s3{animation-delay:-2.4s}
@@ -325,7 +326,7 @@ progress::-moz-progress-bar{border-radius:999px;background:var(--green-700)}
 .decision-opt b{display:block}.decision-opt small{display:block;color:var(--muted);font-size:.82rem}
 
 /* The bindery — a warm desk scene with a real page turn. */
-.bindery{--turn:3s;position:relative;height:300px;margin:6px auto 30px;max-width:620px;border-radius:var(--r-xl);overflow:hidden;text-align:start;
+.bindery{--turn:3s;position:relative;height:300px;margin:6px auto 30px;max-width:760px;border-radius:var(--r-xl);overflow:hidden;text-align:start;
   background:radial-gradient(380px 240px at 50% 22%,#f3cf8a3d,transparent 70%),linear-gradient(#1d3a31,#152c25 64%,#3a2616 64%,#2b1c10);box-shadow:var(--sh-3),inset 0 0 0 1px #ffffff12}
 .bindery[data-step=reading]{--turn:2.4s}.bindery[data-step=reviewing]{--turn:3.6s}.bindery[data-step=rebuilding]{--turn:1.5s}
 .bd-glow{position:absolute;left:50%;top:40px;width:520px;height:320px;transform:translateX(-50%);background:radial-gradient(closest-side,#ffd99033,transparent);animation:glowpulse 6s ease-in-out infinite}
@@ -363,39 +364,33 @@ progress::-moz-progress-bar{border-radius:999px;background:var(--green-700)}
 @keyframes leaf-turn{0%,12%{transform:translateZ(1px) rotateY(0deg)}50%{transform:translateZ(16px) rotateY(-90deg)}88%,100%{transform:translateZ(2px) rotateY(-180deg)}}
 @keyframes leaf-shade{0%,12%{opacity:0}48%{opacity:1}88%,100%{opacity:0}}
 .tome-page.right:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#3c281440,transparent 40%);opacity:0;animation:leaf-shade var(--turn) cubic-bezier(.55,.05,.3,1) infinite}
-.glyphs{position:absolute;left:50%;bottom:30%;width:0;height:0;transform:translateZ(20px);pointer-events:none}
-.glyphs b{position:absolute;left:-6px;bottom:0;font:600 18px/1 var(--display);color:#e8c98a;text-shadow:0 0 8px #ffd98f;opacity:0}
-.bd-quill,.bd-glass,.bd-checks,.bd-stamp{opacity:0;transition:opacity .4s}
-.bd-quill{position:absolute;left:14%;top:-6%;width:34px;height:84px;transform:translateZ(30px) rotate(-18deg);transform-origin:40% 100%;filter:drop-shadow(3px 6px 3px #3c281455)}
-.bd-quill svg{display:block;width:100%;height:100%}
-.bd-glass{position:absolute;right:16%;top:24%;width:44px;height:44px;border-radius:50%;transform:translateZ(30px);box-shadow:inset 0 0 0 5px #c8963e,inset 0 0 18px #ffffff88;background:#ffffff1f}
-.bd-glass:after{content:"";position:absolute;bottom:-18px;right:-9px;width:7px;height:22px;border-radius:3px;background:#5a3a23;transform:rotate(-45deg)}
-.bd-checks{position:absolute;left:8%;top:14%;display:grid;gap:22px;transform:translateZ(10px)}
-.bd-checks i{display:block;width:16px;height:9px;border-inline-start:3px solid #2f6b45;border-bottom:3px solid #2f6b45;transform:rotate(-45deg) scale(0);opacity:0}
-.bd-stamp{position:absolute;top:-6px;inset-inline-end:-30px;padding:7px 12px;border-radius:6px;font:800 .9rem/1 var(--sans);letter-spacing:.1em;color:#c0392b;box-shadow:inset 0 0 0 3px #c0392b;transform:rotate(-14deg)}
-.bd-candle{position:absolute;bottom:62px;inset-inline-start:52px;width:14px;height:40px;border-radius:2px;background:linear-gradient(90deg,#f6ecd2,#d9c9a1)}
+/* Desk props: beside the book, out of the leaf's sweep. Physical sides, like the book itself. */
+.bd-perch{position:absolute;left:14px;bottom:108px;width:190px;height:2px;pointer-events:none}
+.bd-props{position:absolute;right:16px;bottom:62px;width:190px;height:110px;pointer-events:none}
+.bd-candle{position:absolute;right:6px;bottom:0;width:14px;height:46px;border-radius:2px;background:linear-gradient(90deg,#f6ecd2,#d9c9a1);box-shadow:0 4px 0 -1px #c9b48a}
 .bd-candle i{position:absolute;top:-16px;left:2px;width:10px;height:15px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(circle at 50% 70%,#fff4c4,#f5b94b 60%,#e07b2a);box-shadow:0 0 22px 8px #f5b94b55;animation:flame 1.5s ease-in-out infinite}
-.bd-mug{position:absolute;bottom:58px;inset-inline-end:60px;width:30px;height:28px;border-radius:3px 3px 8px 8px;background:linear-gradient(90deg,#7e3027,#a8483b 40%,#7e3027)}
-.bd-mug:after{content:"";position:absolute;top:6px;inset-inline-end:-10px;width:10px;height:13px;border-radius:0 8px 8px 0;box-shadow:inset 0 0 0 3px #8e3b2f}
-html[dir=rtl] .bd-mug:after{border-radius:8px 0 0 8px}
-.bd-mug i{position:absolute;bottom:32px;left:8px;width:4px;height:16px;border-radius:2px;background:#ffffff2e;animation:steam 2.6s ease-in-out infinite}
-.bd-mug i+i{left:17px;animation-delay:-1.3s}
-@keyframes steam{0%{transform:translateY(6px) scaleY(.6);opacity:0}40%{opacity:1}100%{transform:translateY(-14px) scaleY(1.1);opacity:0}}
-/* Stage accessories */
-.bindery[data-step=translating] .bd-quill{opacity:1;animation:quill 1.1s ease-in-out infinite}
-.bindery[data-step=translating] .glyphs b{animation:glyph 3.2s ease-out infinite}
-.bindery[data-step=translating] .glyphs b:nth-child(2){animation-delay:-.8s}.bindery[data-step=translating] .glyphs b:nth-child(3){animation-delay:-1.6s}.bindery[data-step=translating] .glyphs b:nth-child(4){animation-delay:-2.4s}
-.bindery[data-step=reading] .bd-glass{opacity:1;animation:glass 3.4s ease-in-out infinite}
-.bindery[data-step=reviewing] .bd-checks{opacity:1}
-.bindery[data-step=reviewing] .bd-checks i{animation:tick 2.4s ease-out infinite}
-.bindery[data-step=reviewing] .bd-checks i:nth-child(2){animation-delay:.6s}.bindery[data-step=reviewing] .bd-checks i:nth-child(3){animation-delay:1.2s}
-.bindery[data-step=rebuilding] .bd-stamp{opacity:1;animation:stamp 1.8s cubic-bezier(.5,0,.3,1.4) infinite}
-@keyframes quill{0%,100%{transform:translateZ(30px) rotate(-18deg) translate(0,0)}25%{transform:translateZ(30px) rotate(-12deg) translate(12px,3px)}50%{transform:translateZ(30px) rotate(-20deg) translate(26px,0)}75%{transform:translateZ(30px) rotate(-14deg) translate(40px,4px)}}
-@keyframes glyph{0%{opacity:0;transform:translate(0,0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translate(var(--gx,-60px),-70px) scale(1.15) rotate(-12deg)}}
-.glyphs b:nth-child(2){--gx:-30px}.glyphs b:nth-child(3){--gx:-80px}.glyphs b:nth-child(4){--gx:-10px}
-@keyframes glass{0%,100%{transform:translateZ(30px) translate(0,0)}50%{transform:translateZ(30px) translate(-40px,50px)}}
-@keyframes tick{0%,10%{opacity:0;transform:rotate(-45deg) scale(0)}25%,80%{opacity:1;transform:rotate(-45deg) scale(1)}100%{opacity:0;transform:rotate(-45deg) scale(1)}}
-@keyframes stamp{0%,100%{transform:rotate(-14deg) translateY(-10px) scale(1.15);opacity:.4}45%,60%{transform:rotate(-14deg) translateY(0) scale(1);opacity:1}}
+.bd-ink{position:absolute;right:38px;bottom:0;width:30px;height:24px;border-radius:7px 7px 9px 9px;background:radial-gradient(circle at 35% 30%,#4a586c,#151d28 70%);box-shadow:inset 0 2px 0 #ffffff26,0 4px 5px -1px #0008}
+.bd-ink:before{content:"";position:absolute;top:-6px;left:8px;width:14px;height:8px;border-radius:2px;background:#1b2430;box-shadow:inset 0 2px 0 #ffffff1c}
+.bd-quill{position:absolute;right:40px;bottom:14px;width:30px;height:76px;transform-origin:32% 100%;transform:rotate(12deg);filter:drop-shadow(2px 4px 2px #0006)}
+.bd-quill svg{display:block;width:100%;height:100%}
+.bd-glass{position:absolute;right:92px;bottom:4px;width:46px;height:46px;border-radius:50%;box-shadow:inset 0 0 0 5px #c8963e,inset 0 0 16px #ffffff66,0 6px 8px -4px #0008;background:radial-gradient(circle at 35% 30%,#ffffff55,#ffffff12 60%);opacity:0;transition:opacity .4s}
+.bd-glass:after{content:"";position:absolute;bottom:-14px;right:-8px;width:7px;height:22px;border-radius:3px;background:#5a3a23;transform:rotate(-45deg)}
+.bd-stamper{position:absolute;right:98px;bottom:0;width:36px;height:56px;opacity:0;transition:opacity .4s}
+.bd-stamper:before{content:"";position:absolute;bottom:0;left:0;width:36px;height:12px;border-radius:3px;background:linear-gradient(#7a5233,#4b301b);box-shadow:0 -3px 0 #c0392b inset}
+.bd-stamper i{position:absolute;bottom:12px;left:12px;width:12px;height:30px;border-radius:6px 6px 2px 2px;background:linear-gradient(90deg,#8a5d3b,#b98552 50%,#8a5d3b)}
+.bd-stamper i:before{content:"";position:absolute;top:-12px;left:-4px;width:20px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c98a5a,#7a4a2a)}
+/* Marks printed on the pages turn with them. */
+.lines.tgt i{position:relative}
+.page-stamp{position:absolute;left:16px;bottom:22px;padding:4px 8px;border:2px solid #c0392b;border-radius:4px;color:#c0392b;font:800 .6rem/1 var(--sans);letter-spacing:.1em;transform:rotate(-10deg);opacity:0}
+.bindery[data-step=translating] .bd-quill{animation:quill 2.6s ease-in-out infinite}
+.bindery[data-step=reading] .bd-glass{opacity:1;animation:glass 3.2s ease-in-out infinite}
+.bindery[data-step=reviewing] .lines.tgt i:nth-child(odd):after{content:"";position:absolute;left:-15px;top:-4px;width:9px;height:5px;border-left:2px solid #2f6b45;border-bottom:2px solid #2f6b45;transform:rotate(-45deg)}
+.bindery[data-step=rebuilding] .bd-stamper{opacity:1;animation:stamper 1.5s cubic-bezier(.5,0,.3,1.3) infinite}
+.bindery[data-step=rebuilding] .page-stamp{opacity:.85}
+@keyframes quill{0%,100%{transform:rotate(12deg) translate(0,0)}18%{transform:rotate(4deg) translate(-2px,-22px)}34%{transform:rotate(8deg) translate(0,-2px)}50%{transform:rotate(18deg) translate(-6px,-16px)}62%{transform:rotate(10deg) translate(-12px,-14px)}74%{transform:rotate(18deg) translate(-18px,-16px)}86%{transform:rotate(10deg) translate(-8px,-10px)}}
+@keyframes glass{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-14px,-10px) rotate(-8deg)}}
+@keyframes stamper{0%,100%{transform:translateY(-14px)}45%,60%{transform:translateY(0)}}
+@keyframes flame{0%,100%{transform:scale(1,1)}50%{transform:scale(.88,1.08) translateY(-1px)}}
 .bindery[data-running=false] *,.bindery[data-running=false] *:before,.bindery[data-running=false] *:after{animation-play-state:paused!important}
 
 /* Result */
@@ -548,7 +543,7 @@ dialog[open]{animation:dialog-in .22s cubic-bezier(.2,.8,.3,1)}
   .bd-stage{transform:scale(.78);transform-origin:50% 100%}
   .bd-window{width:62px;height:72px;inset-inline-end:16px}
   .bd-window:before{left:29px}.bd-window:after{top:36px}
-  .bd-candle{inset-inline-start:18px}.bd-mug{inset-inline-end:16px}
+  .bd-props .bd-glass,.bd-props .bd-stamper,.bd-props .bd-ink,.bd-props .bd-quill{display:none}.bd-props{width:40px;right:8px}.bd-perch{display:none}
   .footer-row{padding:14px 16px}
   .inline-field select{min-width:0;width:100%}
 }

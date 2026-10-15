@@ -35,3 +35,4 @@
 .roam-thought.side:after{display:none}
 .roam-dot{position:absolute;width:5px;height:5px;bottom:-32px;left:calc(var(--tail) + 3px);background:#fffbea;border:2px solid #2a1d15;border-radius:50%}
 .roam-thought.side .roam-dot{display:none}
+.roam-floor{position:fixed;left:0;right:0;bottom:10px;height:1px;pointer-events:none}

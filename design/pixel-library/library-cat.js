@@ -238,7 +238,9 @@
       }
       for (const [a, b] of free) if (b - a >= w + 4) out.push({ el, key: el.dataset.perch, y: r.t, a, b, left: r.l });
     }
-    return out;
+    // The screen-edge floor is a last resort, used only when no real perch is free.
+    const real = out.filter(seg => seg.key !== 'floor');
+    return real.length || onlyEl ? real.concat(onlyEl ? out.filter(seg => seg.key === 'floor') : []) : out;
   }
   function placeFree(x, y) {
     // Is the cat's box at (x, y) clear of controls and visible?
@@ -624,6 +626,11 @@
   window.libraryCat = {
     mount() {
       if (!root.isConnected) document.body.append(root);
+      if (!document.querySelector('.roam-floor')) {
+        const floor = document.createElement('div');
+        floor.className = 'roam-floor'; floor.dataset.perch = 'floor'; floor.setAttribute('aria-hidden', 'true');
+        document.body.append(floor);
+      }
       new MutationObserver(reconcile).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
       body.setAttribute('aria-label', he() ? 'חתול הספרייה. לחיצה מלטפת, גרירה מרימה אותו' : 'The library cat. Click to pet, drag to pick up');
       if (mode !== 'away') start();

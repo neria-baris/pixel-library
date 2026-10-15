@@ -1,10 +1,10 @@
 {
-  "date": "2026-10-15T17:29:48.341Z",
+  "date": "2026-10-15T18:01:45.861Z",
   "results": [
     {
       "name": "cat moves over time on the library",
       "ok": true,
-      "detail": "[[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"]]"
+      "detail": "[[651,805,\"sit\",\"bookcase\"],[651,805,\"look\",\"bookcase\"],[651,805,\"look\",\"bookcase\"],[651,805,\"sit\",\"bookcase\"],[651,805,\"sit\",\"bookcase\"],[652,805,\"walk\",\"bookcase\"]]"
     },
     {
       "name": "cat never covers controls while perched",
@@ -39,7 +39,7 @@
     {
       "name": "cat follows the scroll into view",
       "ok": true,
-      "detail": "{\"y\":686.375,\"anchor\":\"shelf-top\"}"
+      "detail": "{\"y\":804.671875,\"anchor\":\"bookcase\"}"
     },
     {
       "name": "dragging picks the cat up",
