@@ -151,8 +151,20 @@
     rows.forEach((row, y) => [...row].forEach((c, x) => { if (c !== '.') (d[c] ||= []).push(`M${x} ${y}h1v1h-1z`); }));
     return `<svg class="${cls}" viewBox="0 0 ${rows[0].length} ${rows.length}" shape-rendering="crispEdges" aria-hidden="true" focusable="false">${Object.entries(d).map(([c, p]) => `<path fill="${pal[c]}" d="${p.join('')}"/>`).join('')}</svg>`;
   }
-  const LOGO = pixels(['.....O....O.....', '....OBO..OBO....', '....OBBOOBBO....', '....OBEBBEBO....', 'OOO.OBBBBBBO.OOO', 'OCCOOOOOOOOOOCCO', 'OCCCCCCOOCCCCCCO', 'OCCCCCCOOCCCCCCO', 'OCCCCCCOOCCCCCCO', 'OOOOOOOOOOOOOOOO'],
-    { O: '#e2c27f', B: '#d68b45', E: '#1f3328', C: '#f6ecd2' }, 'logo');
+  const LOGO_SVG = `<svg viewBox="0 0 64 48" aria-hidden="true" focusable="false">
+    <path d="M17 13 L18.5 1.5 L27 8 Z" fill="#e3893a" stroke="#2a1a10" stroke-width="1.6" stroke-linejoin="round"/><path d="M19.4 9.6 L20.2 5 L24 8.3 Z" fill="#f2a69d"/>
+    <path d="M37 8 L45.5 1.5 L47 13 Z" fill="#e3893a" stroke="#2a1a10" stroke-width="1.6" stroke-linejoin="round"/><path d="M40 8.3 L44 5 L44.6 9.6 Z" fill="#f2a69d"/>
+    <ellipse cx="32" cy="18" rx="16" ry="12.5" fill="#e3893a" stroke="#2a1a10" stroke-width="1.6"/>
+    <path d="M28 7 v3.5 M32 6.2 v4 M36 7 v3.5" stroke="#b55d1c" stroke-width="1.7" stroke-linecap="round"/>
+    <ellipse cx="25.5" cy="17" rx="2.4" ry="3" fill="#2c4a28"/><ellipse cx="38.5" cy="17" rx="2.4" ry="3" fill="#2c4a28"/>
+    <circle cx="26.3" cy="15.9" r=".9" fill="#fff"/><circle cx="39.3" cy="15.9" r=".9" fill="#fff"/>
+    <path d="M30.2 21.6 h3.6 l-1.8 2 z" fill="#e08178" stroke="#2a1a10" stroke-width=".7" stroke-linejoin="round"/>
+    <path d="M4 26 C13 22.5 24 23 32 28 C40 23 51 22.5 60 26 L60 45 C51 41.5 40 42 32 46 C24 42 13 41.5 4 45 Z" fill="#2a5144" stroke="#2a1a10" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M6.5 25.5 C14.5 22.5 24.5 23.2 31.6 27.4 L31.6 43.6 C24.5 39.6 14.5 39.2 6.5 42 Z" fill="#fbf3df"/><path d="M57.5 25.5 C49.5 22.5 39.5 23.2 32.4 27.4 L32.4 43.6 C39.5 39.6 49.5 39.2 57.5 42 Z" fill="#fff8ea"/>
+    <path d="M11 29.5 C17 27.5 23 28 28 30.6 M11 33.5 C17 31.5 23 32 28 34.6 M36 30.6 C41 28 47 27.5 53 29.5 M36 34.6 C41 32 47 31.5 53 33.5" fill="none" stroke="#c9b48a" stroke-width="1.1" stroke-linecap="round"/>
+    <ellipse cx="22.5" cy="25.3" rx="4.2" ry="2.8" fill="#fbe8c8" stroke="#2a1a10" stroke-width="1.3"/><ellipse cx="41.5" cy="25.3" rx="4.2" ry="2.8" fill="#fbe8c8" stroke="#2a1a10" stroke-width="1.3"/>
+    <path d="M32 28 L32 46" stroke="#2a1a10" stroke-width="1.2"/></svg>`;
+  const LOGO = LOGO_SVG.replace('<svg ', '<svg class="logo" ');
   const KEY_ICON = pixels(['..OOOO..........', '.O....O.........', 'O..OO..OOOOOOOOO', 'O..OO..OOOOOOOOO', '.O....O.....O.OO', '..OOOO......O.O.'], { O: 'currentColor' }, 'key-icon');
   function heroScene() {
     let s = '';
@@ -238,7 +250,7 @@
     const modelState = !own() ? 'auto' : missingKeys().length ? 'warn' : 'ok';
     const nav = [['library', t('הספרייה', 'Library')], ['new', t('תרגום חדש', 'New translation')], ['learning', t('למידת שפה', 'Language learning')]];
     const navRoute = S.route === 'job' || S.route === 'result' ? 'new' : S.route;
-    const initial = 'נ';
+    const initial = 'R'; // reader@example.com
     const account = S.account === 'signedOut'
       ? `<button type="button" class="tool" data-act="sign-in" aria-label="${t('התחברות עם Google', 'Sign in with Google')}"><span class="g-mark" aria-hidden="true">G</span><span class="tool-text">${t('התחברות עם Google', 'Sign in with Google')}</span></button>`
       : `<div class="account"><button type="button" class="tool avatar" data-act="account" aria-haspopup="true" aria-expanded="${S.accountMenu}" aria-controls="account-menu" aria-label="${t('חשבון Google', 'Google account')}"><span aria-hidden="true">${initial}</span>${S.account === 'syncing' ? '<i class="sync-spin" aria-hidden="true"></i>' : S.account === 'error' ? '<i class="sync-err" aria-hidden="true">!</i>' : ''}</button>
@@ -552,7 +564,7 @@
   }
 
   // ---------- Job ----------
-  const STAGES = [['reading', t('קריאת המסמך', 'Reading')], ['translating', t('תרגום', 'Translating')], ['reviewing', t('בדיקה', 'Review')], ['rebuilding', t('בניית הקובץ', 'Building the file')]];
+  const STAGES_LIST = () => [['reading', t('קריאת המסמך', 'Reading')], ['translating', t('תרגום', 'Translating')], ['reviewing', t('בדיקה', 'Review')], ['rebuilding', t('בניית הקובץ', 'Building the file')]];
   function jobTitle(j) {
     if (j.status === 'paused') return j.blocker ? t('נדרשת החלטה שלכם.', 'Your decision is needed.') : t('מושהה. המילים יחכו.', 'Paused. The words will wait.');
     if (j.status === 'interrupted') return t('העבודה נעצרה.', 'The job stopped.');
@@ -597,13 +609,13 @@
   function jobPage() {
     const j = S.job;
     if (!j) return `<div class="page-head"><h1>${t('אין עבודה פעילה.', 'No active job.')}</h1><p><button type="button" class="btn" data-go="new">${t('תרגום חדש', 'New translation')}</button></p></div>`;
-    const stageIndex = STAGES.findIndex(([s]) => s === (j.lastStage || j.status));
+    const stageIndex = STAGES_LIST().findIndex(([s]) => s === (j.lastStage || j.status));
     return `<section class="job" aria-labelledby="job-title">${bindery(j)}
       <div class="job-status"><span class="eyebrow">${j.target === 'en' ? t('המסמך בדרך לאנגלית', 'On its way to English') : t('המסמך בדרך לעברית', 'On its way to Hebrew')}${j.own ? '' : ' · Auto'}</span>
         <h1 id="job-title" tabindex="-1">${jobTitle(j)}</h1><p dir="auto" class="muted">${esc(j.filename)}</p><p id="job-pct" class="job-pct">${shownPct(j)}%</p></div>
       <progress id="job-progress" max="100" value="${shownPct(j)}" aria-label="${t('התקדמות התרגום', 'Translation progress')}"></progress>
-      <ol class="stages">${STAGES.filter(([s]) => s !== 'reviewing' || j.quality !== 'fast').map(([s, label], i) => {
-        const idx = STAGES.findIndex(([x]) => x === s);
+      <ol class="stages">${STAGES_LIST().filter(([s]) => s !== 'reviewing' || j.quality !== 'fast').map(([s, label], i) => {
+        const idx = STAGES_LIST().findIndex(([x]) => x === s);
         return `<li class="${idx < stageIndex || j.status === 'completed' ? 'done' : idx === stageIndex ? 'current' : ''}" data-stage="${s}">${label}</li>`; }).join('')}</ol>
       <p class="job-detail">${j.status === 'paused' && !j.blocker ? t('ההתקדמות נשמרה. ״המשך״ ממשיך בדיוק מאותה נקודה.', 'Progress is saved. “Continue” resumes from exactly this point.') : t('אפשר להשאיר את החלון פתוח או לחזור אליו בהמשך מהספרייה.', 'You can leave this window open or come back later from the library.')}</p>
       ${j.own ? `<div class="meter job-meter"><div class="meter-head"><span>${t('נוצלו', 'Spent')} <bdi id="job-spent">${money(j.spent, 4)}</bdi> ${t('מתוך', 'of')} <bdi>${money(j.budget)}</bdi></span><span class="muted small">${t('עצירה קשיחה בתקרה', 'Hard stop at the cap')}</span></div><div class="meter-bar"><i id="job-meter" style="width:${Math.min(100, 100 * j.spent / j.budget)}%"></i></div>
@@ -1176,8 +1188,12 @@
   addEventListener('hashchange', () => { const r = location.hash.slice(1); if (['library', 'new', 'learning'].includes(r)) go(r); });
 
   // ---------- Start ----------
+  const startLang = new URLSearchParams(location.search).get('lang') || document.documentElement.dataset.startLang;
+  if (startLang === 'en' || startLang === 'he') S.lang = startLang;
   const initial = location.hash.slice(1);
   if (['library', 'new', 'learning'].includes(initial)) S.route = initial;
+  const icon = document.querySelector('link[rel=icon]') || document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'icon' }));
+  icon.href = 'data:image/svg+xml,' + encodeURIComponent(LOGO_SVG.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '));
   render();
   window.libraryCat?.mount();
   window.libraryApp = { state: S, books, render }; // read by the local verification script
