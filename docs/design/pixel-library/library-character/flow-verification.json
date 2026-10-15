@@ -1,0 +1,335 @@
+{
+    "time_utc":  "2026-10-15T11:53:49.5383277Z",
+    "checks":  82,
+    "passed":  82,
+    "results":  [
+                    {
+                        "name":  "a initial render and RTL",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a no primary dropdowns",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a library has 3 books",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a book search",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a empty search recovery",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a status filter",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a file required",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a rejects invalid file type",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a accepts file metadata",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a native slider keyboard",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a visible profile and review choices",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a rejects invalid budget",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a exact budget input",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a terms local feedback",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a mobile configuration no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a confirmation explicit demo",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a modal keyboard focus containment",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a Escape dismisses and restores focus",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a simulation started",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a pause holds progress",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a resume advances",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a result remains draft",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a edit preserved across segments",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a no markup injection",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a sample export dialog",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a sample download generated",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a exported text escaped and unapproved",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a mobile review no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a Arabic selection",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a effort slider updates readable label",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a chapter and gloss",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a chapter completion",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a gloss preference persists",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a mobile learning no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a quiet art preference",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a no credential collection",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a library at 320px no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a no script errors",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a no external page resources",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "a English target and direction",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b initial render and RTL",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b no primary dropdowns",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b library has 3 books",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b book search",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b empty search recovery",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b status filter",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b file required",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b rejects invalid file type",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b accepts file metadata",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b native slider keyboard",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b visible profile and review choices",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b rejects invalid budget",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b exact budget input",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b terms local feedback",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b mobile configuration no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b confirmation explicit demo",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b modal keyboard focus containment",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b Escape dismisses and restores focus",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b simulation started",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b pause holds progress",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b resume advances",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b result remains draft",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b edit preserved across segments",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b no markup injection",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b sample export dialog",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b sample download generated",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b exported text escaped and unapproved",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b mobile review no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b Arabic selection",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b effort slider updates readable label",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b chapter and gloss",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b chapter completion",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b gloss preference persists",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b mobile learning no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b quiet art preference",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b no credential collection",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b library at 320px no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b no script errors",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b no external page resources",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "b English target and direction",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "comparison links both prototypes",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "comparison mobile no overflow",
+                        "passed":  true
+                    }
+                ]
+}

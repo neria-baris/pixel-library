@@ -179,6 +179,7 @@
     enhanceBudget();
     enhanceNavigation();
     enhanceLibrary();
+    window.libraryWorkbenchPolish?.();
   };
   document.addEventListener('input', event => {
     if (event.target.matches('input[type="range"]')) updateRange(event.target);

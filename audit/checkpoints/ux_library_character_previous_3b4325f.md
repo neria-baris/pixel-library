@@ -1,0 +1,11 @@
+# Current state — Library prototype revision (2026-10-15)
+
+UX-LIBRARY-REVISION PASS for prototype refinement only. User selected A and explicitly requested polishing before production integration. Direct Codex authorization persists. Branch design/pixel-library-prototypes; worktree .claude/worktrees/pixel-library-prototypes; prior receipt106b5ae. New delivery hash belongs in separate receipt after commit. No main merge/push or remote operation.
+
+A now says Library (הספרייה), with original pixel-book-spine hero, matte-green square rail/grip, text navigation and +/- disclosures. Every sample book has visible deletion with named confirmation, Cancel/Escape focus restoration, in-memory removal and undo. Counts/search/filter/navigation/empty states reflect removal; reload resets sample records. No real files are removed/read, no provider/storage calls or production code changes. B remains comparison baseline; its link names current A.
+
+Contract audit/contracts/ux_library_revision.md. Documentation docs/design/pixel-library/LIBRARY_REVISION_HE.md.30/30 focused Chrome assertions and82/82 existing flow checks PASS; both reports and nine reviewed synthetic screenshots under library-revision/. Checks include real RTL pointer drag, native keyboard, precise budget, deletion/cancel/Escape/undo/focus/filter/empty/reload and1440/390/320 overflow. Confirmation title shortened after test run and visually rechecked at320px. No real-device/Firefox/full-WCAG or production-regression claim.
+
+Prior checkpoint preserved in audit/checkpoints/ux_library_revision_previous_106b5ae.md. Standalone ZIP refreshed in ignored outputs/ux/. Preview http://127.0.0.1:8817/a.html; refresh. Chrome CDP9332/static8817 are test-only helpers. External builders/advisers/runtime0; conductor Codex direct; subscription usage/cost and elapsed not_metered. Failed prior Claude invocation remains documented, not retried.
+
+Root main has unrelated concurrent work; do not integrate/rebase/reconcile. Current refinement local-only, no remote backup per task scope. Verified delivery 2b43a642c75293666662d4054825e9903fcabba8;28 intended paths, clean tree after commit. Receipt audit/checkpoints/ux_library_revision_receipt.md. Next: user reviews prototype; production integration requires later instruction. Receipt-only commit follows.
