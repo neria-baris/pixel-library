@@ -17,11 +17,11 @@
 .roam-cat.arriving{opacity:.4}
 
 /* Thought bubble: rounded cloud with trailing thought dots, kept inside the viewport by JS. */
-.roam-thought{position:absolute;bottom:calc(24px*var(--cat-scale) + 10px);left:0;width:max-content;max-width:min(250px,calc(100vw - 24px));padding:10px 14px;background:#fffbea;color:#3a3122;border:3px solid #2a1d15;border-radius:28px;box-shadow:4px 4px 0 #2a1d1526,inset 0 0 0 4px #fffbea,inset 0 0 0 5px #2a1d1514;font:italic 500 .9rem/1.6 var(--serif,Georgia,serif);pointer-events:none;animation:thought-in .22s steps(3,end) both;--tail:50%}
+.roam-thought{position:absolute;top:0;left:0;width:max-content;max-width:min(250px,calc(100vw - 24px));padding:10px 14px;background:#fffbea;color:#3a3122;border:3px solid #2a1d15;border-radius:28px;box-shadow:4px 4px 0 #2a1d1526,inset 0 0 0 4px #fffbea,inset 0 0 0 5px #2a1d1514;font:italic 500 .9rem/1.6 var(--serif,Georgia,serif);pointer-events:none;animation:thought-in .22s steps(3,end) both;--tail:50%;--lean:0px;--mid:50%}
 .roam-thought p{margin:0}
 .roam-thought:before,.roam-thought:after{content:"";position:absolute;background:#fffbea;border:3px solid #2a1d15;border-radius:50%}
-.roam-thought:before{width:12px;height:12px;bottom:-14px;left:calc(var(--tail) - 12px)}
-.roam-thought:after{width:7px;height:7px;bottom:-24px;left:calc(var(--tail) - 4px)}
+.roam-thought:before{width:12px;height:12px;bottom:-15px;left:calc(var(--tail) + var(--lean) * .3 - 6px)}
+.roam-thought:after{width:8px;height:8px;bottom:-26px;left:calc(var(--tail) + var(--lean) * .6 - 4px)}
 @keyframes thought-in{from{opacity:0;transform:translateY(6px) scale(.9)}to{opacity:1;transform:none}}
 
 .roam-fx{position:absolute;left:50%;bottom:calc(18px*var(--cat-scale));width:0;height:0}
@@ -30,12 +30,7 @@
 @keyframes cat-float{0%{opacity:0;transform:translateY(0)}20%{opacity:1}100%{opacity:0;transform:translateY(-46px)}}
 @media(forced-colors:active){.roam-thought{border-color:CanvasText}}
 @media print{.roam-cat{display:none}}
-.roam-thought.side{bottom:calc(10px*var(--cat-scale))}
-.roam-thought.side:before{bottom:8px;left:var(--tail)}
-.roam-thought.side:after{display:none}
-.roam-dot{position:absolute;width:5px;height:5px;bottom:-32px;left:calc(var(--tail) + 3px);background:#fffbea;border:2px solid #2a1d15;border-radius:50%}
-.roam-thought.side .roam-dot{display:none}
-.roam-floor{position:fixed;left:0;right:0;bottom:10px;height:1px;pointer-events:none}
+.roam-thought.side .roam-floor{position:fixed;left:0;right:0;bottom:10px;height:1px;pointer-events:none}
 
 /* Illustrated cat. Warm ginger tabby, cream chest and socks, soft outline. */
 .cat-svg{overflow:visible}
@@ -124,3 +119,11 @@
 @keyframes cat-loaf{0%,100%{transform:translateY(14px) scaleY(1)}50%{transform:translateY(13.4px) scaleY(1.03)}}
 @keyframes cat-lick{from{transform:rotate(-158deg)}to{transform:rotate(-146deg)}}
 .cat-svg[data-pose=groom] .c-chest{display:none}
+.roam-dot{position:absolute;width:5px;height:5px;bottom:-34px;left:calc(var(--tail) + var(--lean) * .9 - 2.5px);background:#fffbea;border:2px solid #2a1d15;border-radius:50%}
+/* Beside the head: the dots run sideways toward it. */
+.roam-thought[data-side=right]:before{left:-15px;bottom:auto;top:calc(var(--mid) - 6px)}
+.roam-thought[data-side=right]:after{left:-26px;bottom:auto;top:calc(var(--mid) - 4px)}
+.roam-thought[data-side=right] .roam-dot{left:-35px;bottom:auto;top:calc(var(--mid) - 2.5px)}
+.roam-thought[data-side=left]:before{left:auto;right:-15px;bottom:auto;top:calc(var(--mid) - 6px)}
+.roam-thought[data-side=left]:after{left:auto;right:-26px;bottom:auto;top:calc(var(--mid) - 4px)}
+.roam-thought[data-side=left] .roam-dot{left:auto;right:-35px;bottom:auto;top:calc(var(--mid) - 2.5px)}

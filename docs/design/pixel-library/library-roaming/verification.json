@@ -1,58 +1,8 @@
 {
-  "date": "2026-10-15T19:25:58.761Z",
+  "date": "2026-10-15T19:58:32.817Z",
   "results": [
     {
-      "name": "bindery has two turning leaves",
-      "ok": true,
-      "detail": ""
-    },
-    {
-      "name": "large library opens a few shelves, not all 120",
-      "ok": true,
-      "detail": "76"
-    },
-    {
-      "name": "“more shelves” adds books",
-      "ok": true,
-      "detail": ""
-    },
-    {
-      "name": "hovered book turns to show its cover",
-      "ok": true,
-      "detail": ""
-    },
-    {
-      "name": "list view shows every book",
-      "ok": true,
-      "detail": ""
-    },
-    {
-      "name": "gloss opens",
-      "ok": true,
-      "detail": ""
-    },
-    {
-      "name": "English switches direction",
-      "ok": true,
-      "detail": ""
-    },
-    {
-      "name": "no horizontal overflow at 390",
-      "ok": true,
-      "detail": "390"
-    },
-    {
-      "name": "no horizontal overflow on new at 390",
-      "ok": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile cat clear of controls",
-      "ok": true,
-      "detail": ""
-    },
-    {
-      "name": "cat pauses on hidden tab",
+      "name": "thought trails from the head in every pose, direction and edge (40 cases)",
       "ok": true,
       "detail": ""
     },

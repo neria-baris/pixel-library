@@ -238,21 +238,30 @@
     svg.classList.toggle('blink', now < blinkUntil);
     if (!bubble.hidden) placeBubble();
   }
+  // The thought always rises from the cat's head, wherever the pose, direction or screen edge put it.
+  const headNode = svg.querySelector('.c-head ellipse.c-fur');
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), Math.max(lo, hi));
   function placeBubble() {
-    const w = bubble.offsetWidth, h = bubble.offsetHeight, left = cat.x - scrollX, catCenter = left + W() / 2;
-    // No room above (sticky header)? Think sideways, toward the roomier side.
-    const side = cat.y - H() - scrollY - h - 26 < headerBottom();
-    bubble.classList.toggle('side', side);
-    if (side) {
-      const right = innerWidth - (left + W()) > left;
-      const x = right ? Math.min(W() + 14, innerWidth - left - w - 8) : Math.max(-w - 14, 8 - left);
-      bubble.style.left = `${Math.round(x)}px`;
-      bubble.style.setProperty('--tail', right ? '-6px' : `${w + 2}px`);
-      return;
+    const box = root.getBoundingClientRect(), head = headNode.getBoundingClientRect();
+    const w = bubble.offsetWidth, h = bubble.offsetHeight, gap = 34;
+    const cx = head.left + head.width / 2, top = headerBottom() + 6;
+    const above = head.top - gap - h >= top;
+    bubble.dataset.side = above ? '' : (innerWidth - head.right >= head.left ? 'right' : 'left');
+    let left, y;
+    if (above) {
+      left = clamp(cx - w / 2, 8, innerWidth - w - 8);
+      y = head.top - gap - h;
+      const tail = clamp(cx - left, 22, w - 22);
+      bubble.style.setProperty('--tail', `${Math.round(tail)}px`);
+      bubble.style.setProperty('--lean', `${Math.round(cx - left - tail)}px`);
+    } else {
+      // Not enough room under the header: think beside the head, dots pointing at it.
+      left = bubble.dataset.side === 'right' ? Math.min(head.right + gap, innerWidth - w - 8) : Math.max(head.left - gap - w, 8);
+      y = clamp(head.top + head.height / 2 - h / 2, top, innerHeight - h - 8);
+      bubble.style.setProperty('--mid', `${Math.round(clamp(head.top + head.height / 2 - y, 14, h - 14))}px`);
     }
-    const clamped = Math.min(Math.max(catCenter - w / 2, 8), innerWidth - w - 8);
-    bubble.style.left = `${Math.round(clamped - left)}px`;
-    bubble.style.setProperty('--tail', `${Math.round(catCenter - clamped)}px`);
+    bubble.style.left = `${Math.round(left - box.left)}px`;
+    bubble.style.top = `${Math.round(y - box.top)}px`;
   }
 
   function loop(now) {
@@ -635,7 +644,12 @@
         if (type === 'job-paused') { await tk.wait(1500); }
       });
     },
-    // Test hooks (verification script only reads them).
+    // Test hooks for the verification script: place the cat and show a thought without running behaviour.
+    _testThink({ face = 1, pose = 'sit', x = 200, y = 400, text = '…' } = {}) {
+      token?.cancel(); token = new Token(); cat.motion = null; cat.anchor = null;
+      cat.face = face; setPose(pose); cat.x = x + scrollX; cat.y = y + scrollY;
+      bubbleText.textContent = text; bubble.hidden = false;
+    },
     debug: () => ({ x: cat.x, y: cat.y, w: W(), h: H(), pose: cat.pose, anchor: cat.anchor?.key || null, paused, running, mode, thought: bubble.hidden ? '' : bubbleText.textContent, free: placeFree(cat.x, cat.y), segments: segments().length })
   };
 })();

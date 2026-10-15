@@ -44,6 +44,11 @@ async function load(hash = '') {
   await sleep(1500);
 }
 const results = [];
+const trail = `(() => { const b = document.querySelector('.roam-thought'); if (b.hidden) return null;
+  const head = document.querySelector('.c-head ellipse.c-fur').getBoundingClientRect(), dot = document.querySelector('.roam-dot').getBoundingClientRect();
+  const dx = Math.max(head.left - (dot.left + dot.width / 2), (dot.left + dot.width / 2) - head.right, 0);
+  const dy = Math.max(head.top - (dot.top + dot.height / 2), (dot.top + dot.height / 2) - head.bottom, 0);
+  return { gap: Math.round(Math.hypot(dx, dy)), side: b.dataset.side || 'above', face: document.querySelector('.roam-cat').classList.contains('face-left') ? 'left' : 'right' }; })()`;
 function check(name, ok, detail = '') { results.push({ name, ok: !!ok, detail }); console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${detail ? ' — ' + detail : ''}`); }
 // Is the cat clear of every interactive rect and inside the viewport below the header?
 const catClear = `(() => { const d = libraryCat.debug(); const cat = document.querySelector('.roam-cat'); if (cat.hidden || cat.classList.contains('away')) return {visible:false, ...d};
@@ -94,6 +99,8 @@ try {
     const petted = await js(`libraryCat.debug()`);
     check('petting makes the cat happy and think', petted.pose === 'happy' && petted.thought.length > 0, petted.thought);
     await shot('cat-petted');
+    const t1 = await js(trail);
+    check('petting thought trails from the head', t1 && t1.gap <= 24, JSON.stringify(t1));
     // Select a book and check the detail card.
     await js(`document.querySelector('.spine').click()`); await sleep(300);
     check('spine opens book detail', await js(`!!document.querySelector('.book-card h3')`));
@@ -119,6 +126,8 @@ try {
     const held = await js(`libraryCat.debug()`);
     check('dragging picks the cat up', held.pose === 'held', held.thought);
     await shot('cat-held');
+    const t2 = await js(trail);
+    check('held thought trails from the head', t2 && t2.gap <= 24, JSON.stringify(t2));
     await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: c.x + 240, y: c.y + 320, button: 'left', clickCount: 1 });
     await sleep(1800);
     const landed = await js(catClear);
@@ -186,6 +195,20 @@ try {
     await js(`document.querySelector('[data-view=list]').click()`); await sleep(400);
     check('list view shows every book', (await js(`document.querySelectorAll('.list-book').length`)) >= 120);
     await shot('library-list');
+  }
+  if (want('bubble')) {
+    // Every pose, both directions, centre, both edges and right under the header.
+    await viewport(1280, 760); await load(); await sleep(2500);
+    await js(`document.querySelector('[data-act=close-update]')?.click()`); await sleep(300);
+    const misses = [];
+    for (const face of [1, -1]) for (const pose of ['sit', 'walk', 'loaf', 'held']) for (const [x, y] of [[560, 420], [4, 420], [1150, 420], [560, 170], [4, 160]]) {
+      await js(`libraryCat._testThink({face:${face}, pose:'${pose}', x:${x}, y:${y}, text:'מחשבה ארוכה במיוחד כדי לבדוק את הבועה ליד הקצה'})`); await sleep(260);
+      const r = await js(trail);
+      if (!r || r.gap > 24) misses.push(`${face}/${pose}/${x},${y}:${JSON.stringify(r)}`);
+      if (pose === 'sit' && x === 4 && y === 160) await shot(`bubble-${face > 0 ? 'right' : 'left'}-corner`);
+      if (pose === 'walk' && x === 1150) await shot(`bubble-${face > 0 ? 'right' : 'left'}-edge`);
+    }
+    check('thought trails from the head in every pose, direction and edge (40 cases)', misses.length === 0, misses.slice(0, 3).join(' | '));
   }
   if (want('decision')) {
     await viewport(1440, 900); await load('#new'); await sleep(800);
