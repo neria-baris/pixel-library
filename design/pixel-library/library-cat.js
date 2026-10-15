@@ -89,66 +89,67 @@
   const he = () => document.documentElement.lang !== 'en';
   const L = pair => pair[he() ? 0 : 1];
   const pick = list => list[Math.floor(Math.random() * list.length)];
+  // Inner monologue only: the cat thinks about the humans, he never addresses them.
   const LINES = {
-    hello: [['שוב אתם? יופי. הבאתם חטיף?', 'You again? Great. Did you bring snacks?'],
-      ['הספרייה פתוחה. אני הספרן. בערך.', 'The library is open. I am the librarian. Roughly.']],
+    hello: [['הם חזרו. אולי הביאו חטיף.', 'The humans are back. Perhaps snacks.'],
+      ['אני הספרן כאן. בערך.', 'I am the librarian here. Roughly.']],
     idle: [['המדף הזה נבדק. נמצא מתאים לישיבה.', 'This shelf has been inspected. Approved for sitting.'],
       ['קראתי את כל הספרים כאן. בעיקר את הפינות.', 'I have read every book here. Mostly the corners.'],
-      ['אם משהו נופל מהמדף, זה לא אני. אלא אם כן זה אני.', 'If something falls off the shelf, it wasn’t me. Unless it was.'],
+      ['אם משהו ייפול מהמדף, זה לא אני. אלא אם כן זה אני.', 'If something falls off the shelf, it wasn’t me. Unless it was.'],
       ['הערת שוליים: אני.', 'Footnote: me.'],
       ['אין מילה ל״דדליין״ בשפת חתולים.', 'There is no word for “deadline” in Cat.'],
-      ['אני לא ישן. אני עושה הגהה בעיניים עצומות.', 'I’m not sleeping. I’m proofreading with my eyes closed.'],
-      ['עברית, אנגלית, יפנית… ואני עדיין עונה רק ל״טונה״.', 'Hebrew, English, Japanese… and I still only answer to “tuna”.'],
-      ['ריח של נייר ישן… ושל עכבר?', 'Smells like old paper… and mouse?']],
+      ['לא ישנתי. עשיתי הגהה בעיניים עצומות.', 'Not asleep. Proofreading with my eyes closed.'],
+      ['עברית, אנגלית, יפנית… ואני עדיין עונה רק ל״טונה״.', 'Hebrew, English, Japanese… and still I answer only to “tuna”.'],
+      ['ריח של נייר ישן… ושל עכבר?', 'Old paper… and mouse?']],
     library: [['כל ספר כאן הוא כרית בפוטנציה.', 'Every book here is a potential pillow.'],
-      ['סידרתי את המדף לפי חום. העליון הכי חם.', 'I sorted the shelf by warmth. Top one’s warmest.'],
-      ['ה־EPUB הזה מגרגר כשפותחים אותו. או שזה אני.', 'This EPUB purrs when you open it. Or that’s me.'],
+      ['סידרתי את המדף לפי חום. העליון הכי חם.', 'Shelf sorted by warmth. Top one’s warmest.'],
+      ['ה־EPUB הזה מגרגר כשפותחים אותו. או שזה אני.', 'That EPUB purrs when opened. Or that’s me.'],
       ['אין קנסות על איחור. רק על הזזת חתול.', 'No late fees. Only cat-relocation fees.']],
-    new: [['שימו את הקובץ כאן. אשב עליו כדי שיישאר חם.', 'Put the file here. I’ll sit on it to keep it warm.'],
-      ['תקציב? אני מודד הכול בקופסאות טונה.', 'Budget? I measure everything in tuna cans.'],
+    new: [['כשיגיע קובץ, אשב עליו. שיישאר חם.', 'When a file arrives, I shall sit on it. Keep it warm.'],
+      ['תקציב. אצלי הכול נמדד בקופסאות טונה.', 'Budgets. I measure everything in tuna cans.'],
       ['המונחים שלי: מיאו = שלום, מיאו! = אוכל, מיאו!!! = עכשיו.', 'My terms: meow = hello, meow! = food, meow!!! = now.']],
-    job: [['אני מפקח על התרגום. כלומר, יושב לידו.', 'I’m supervising the translation. That is, sitting next to it.'],
-      ['האותיות האלה עפות. מותר לתפוס אחת?', 'Those letters are flying. May I catch one?'],
+    job: [['אני מפקח על התרגום. כלומר, יושב לידו.', 'I am supervising the translation. That is, sitting near it.'],
+      ['האותיות עפות. אולי אתפוס אחת.', 'Letters are flying. Perhaps I’ll catch one.'],
       ['העלילה מסתבכת. כמו חוט צמר.', 'The plot thickens. Like yarn.']],
     result: [['טיוטה. כלומר עוד מותר לשבת עליה.', 'A draft. Like the one under the door.'],
-      ['אבקש קרדיט בעמוד השער: ״בסיוע החתול״.', 'I’d like credit on the title page: “with help from the cat”.']],
+      ['מגיע לי קרדיט בעמוד השער: ״בסיוע החתול״.', 'I deserve credit on the title page: “with help from the cat”.']],
     learning: [['Le chat. זה אני. בצרפתית אני נשמע יקר יותר.', 'Le chat. That’s me. I sound pricier in French.'],
       ['אוצר המילים שלי: מיאו, מיאו, ותן.', 'My vocabulary: meow, meow, and gimme.']],
-    pet: [['פררר…', 'Prrrr…'], ['עוד. מאחורי האוזן.', 'More. Behind the ear.'],
-      ['ההנאה הזאת תירשם ביומן העלויות.', 'This pleasure will be logged in the cost ledger.'],
-      ['מותר. אבל רק כי זה יום רביעי.', 'Allowed. But only because it’s Wednesday.']],
-    enough: [['מספיק. אני חתול מקצועי.', 'Enough. I am a professional.']],
-    held: [['הי! אני לא קובץ לגרירה!', 'Hey! I am not a draggable file!']],
+    pet: [['פררר…', 'Prrrr…'], ['כן… מאחורי האוזן…', 'Yes… behind the ear…'],
+      ['ההנאה הזאת תירשם ביומן העלויות.', 'This pleasure goes in the cost ledger.'],
+      ['מרשה להם. רק כי זה יום רביעי.', 'I allow it. Only because it’s Wednesday.']],
+    enough: [['די. חתול מקצועי צריך מרחב.', 'Enough. A professional cat needs space.']],
+    held: [['למה הרצפה מתרחקת?!', 'Why is the floor getting farther away?!']],
     dropped: [['נחתתי על הרגליים. כרגיל.', 'Landed on my feet. As usual.']],
-    wake: [['התעוררתי. מה פספסתי?', 'I’m up. What did I miss?']],
-    'file-selected': [['הרחתי. ריח של PDF טרי.', 'Sniffed it. Fresh PDF.']],
-    'file-error': [['גם אני לא מצליח לפתוח את זה. ואני פותח כל ארון.', 'I can’t open it either. And I open every cupboard.']],
-    sample: [['ספר לדוגמה. גם אני חתול לדוגמה.', 'A sample book. I’m a sample cat.']],
-    'job-start': [['מתחילים! אני אחראי על ההפסקות.', 'Starting! I’m in charge of breaks.']],
-    'job-paused': [['השהיה? מושלם. זמן תנומה.', 'Paused? Perfect. Nap time.']],
-    'job-decision': [['צריך להחליט. אני חתול, אני רק מפיל דברים.', 'A decision is needed. I’m a cat. I just knock things over.']],
-    'job-error': [['משהו נתקע. לא אני הפעם, נשבע.', 'Something got stuck. Not me this time, I swear.']],
-    'job-done': [['גמרנו! מותר ללטף עכשיו.', 'Done! Petting may now commence.']],
+    wake: [['כמה זמן ישנתי? כנראה לא מספיק.', 'How long did I sleep? Not enough, clearly.']],
+    'file-selected': [['ריח של PDF טרי.', 'Smells like a fresh PDF.']],
+    'file-error': [['גם אני לא הייתי פותח את זה. ואני פותח כל ארון.', 'I wouldn’t open that either. And I open every cupboard.']],
+    sample: [['ספר לדוגמה. גם אני חתול לדוגמה.', 'A sample book. I am a sample cat.']],
+    'job-start': [['התחילו. מישהו צריך להיות אחראי על ההפסקות. אני.', 'They started. Someone must be in charge of breaks. Me.']],
+    'job-paused': [['השהיה. מושלם. זמן תנומה.', 'A pause. Perfect. Nap time.']],
+    'job-decision': [['הם צריכים להחליט. אני רק מפיל דברים.', 'They must decide. I only knock things over.']],
+    'job-error': [['משהו נתקע. לא אני הפעם.', 'Something got stuck. Not me this time.']],
+    'job-done': [['גמרנו. עכשיו בטח ילטפו אותי.', 'Done. Surely petting follows.']],
     delete: [['לתוך הריק. כמו הצעצועים שלי מתחת לספה.', 'Into the void. Like my toys under the sofa.']],
-    download: [['לא יודע מה זה PDF, אבל אני גאה בך.', 'I don’t know what a PDF is, but I’m proud of you.']],
+    download: [['לא ברור לי מה זה PDF. בכל זאת, גאווה.', 'Unclear what a PDF is. Proud anyway.']],
     'search-empty': [['חיפשתי גם מתחת לספה. כלום.', 'Checked under the sofa too. Nothing.']],
-    'key-missing': [['אין מפתח? גם לי אין, ובכל זאת אני נכנס לכל חדר.', 'No key? Me neither, and I get into every room.']],
-    typing: [['המקלדת חמה. שוקל לשבת עליה.', 'That keyboard looks warm. Considering it.']],
-    update: [['עדכון! אולי הוסיפו כפתור טונה.', 'An update! Maybe they added a tuna button.']],
-    'lang-en': [['Meow. I mean: hello.', 'Meow. I mean: hello.']],
-    'lang-he': [['מיאו. כלומר: שלום.', 'מיאו. כלומר: שלום.']],
+    'key-missing': [['אין להם מפתח. גם לי אין, ובכל זאת אני נכנס לכל חדר.', 'They have no key. Neither do I, yet I enter every room.']],
+    typing: [['המקלדת הזאת נראית חמה…', 'That keyboard looks warm…']],
+    update: [['עדכון. אולי הוסיפו כפתור טונה.', 'An update. Maybe a tuna button.']],
+    'lang-en': [['אנגלית עכשיו. מיאו נשמע אותו דבר.', 'English now. Meow sounds the same.']],
+    'lang-he': [['עברית שוב. מיאו נשאר מיאו.', 'Hebrew again. Meow stays meow.']],
     model: {
-      'gpt-6-luna': [['לונה. כמו הירח. אני מיילל אליו בלילות.', 'Luna. Like the moon. I yowl at it nightly.']],
-      'gpt-6.1-sol': [['סול. שמש. אשכב בה, אם אפשר.', 'Sol. Sun. I’ll lie in it, if I may.']],
+      'gpt-6-luna': [['לונה. כמו הירח שאני מיילל אליו בלילות.', 'Luna. Like the moon I yowl at nightly.']],
+      'gpt-6.1-sol': [['סול. שמש. מקום טוב לשכב בו.', 'Sol. Sun. A fine place to lie down.']],
       'claude-haiku-4-5': [['חתול על מדף / שמש חמה על הכריכה / אין לי שאלות.', 'cat upon the shelf / warm sun on the cover / no further questions']],
-      'claude-sonnet-5-5': [['סונטה? רק אם יש בה ארבע־עשרה שורות על טונה.', 'A sonnet? Only if it’s fourteen lines about tuna.']],
-      'claude-opus-5-5': [['אופוס? אני מעדיף תמנון.', 'Opus? I prefer octopus.']],
+      'claude-sonnet-5-5': [['סונטה. מקווה שעל טונה.', 'A sonnet. Hopefully about tuna.']],
+      'claude-opus-5-5': [['אופוס… הייתי מעדיף תמנון.', 'Opus… I’d prefer octopus.']],
       auto: [['Auto. כמוני: עושה רושם של עבודה.', 'Auto. Like me: gives the impression of work.']]
     }
   };
   function budgetLine(amount) {
     const cans = Math.max(1, Math.floor(amount / 1.5));
-    return he() ? `$${amount}? זה ${cans} קופסאות טונה. רק אומר.` : `$${amount}? That’s ${cans} cans of tuna. Just saying.`;
+    return he() ? `$${amount}… זה ${cans} קופסאות טונה.` : `$${amount}… that’s ${cans} cans of tuna.`;
   }
 
   // ---------- Sound (opt-in, synthesized locally) ----------
@@ -192,7 +193,7 @@
   const root = document.createElement('div');
   root.className = 'roam-cat';
   root.hidden = true;
-  root.innerHTML = `<div class="roam-thought" aria-hidden="true" hidden><p></p></div>
+  root.innerHTML = `<div class="roam-thought" aria-hidden="true" hidden><p></p><i class="roam-dot"></i></div>
     <button type="button" class="roam-body"><svg viewBox="0 0 ${GW} ${GH}" shape-rendering="crispEdges" aria-hidden="true" focusable="false">${
       Object.entries(FRAMES).map(([name, parts]) => `<g data-f="${name}" style="display:none">${compose(parts)}</g>`).join('')}</svg></button>
     <span class="roam-fx" aria-hidden="true"></span>`;
@@ -512,8 +513,9 @@
         return;
       }
       setPose('happy'); burst('heart', 3); tone('purr');
-      announce(L(pick(LINES.pet)));
-      await think(tk, bubbleTextFor('pet'), 2400);
+      const thought = bubbleTextFor('pet');
+      announce((he() ? 'חתול הספרייה חושב: ' : 'The library cat thinks: ') + thought);
+      await think(tk, thought, 2400);
       setPose('sit');
       if (mode === 'nap') await nap(tk);
     });

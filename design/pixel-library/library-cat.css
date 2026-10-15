@@ -17,7 +17,7 @@
 .roam-cat.arriving{opacity:.4}
 
 /* Thought bubble: rounded cloud with trailing thought dots, kept inside the viewport by JS. */
-.roam-thought{position:absolute;bottom:calc(22px*var(--cat-scale) + 14px);left:0;width:max-content;max-width:min(250px,calc(100vw - 24px));padding:10px 14px;background:#fffbea;color:#3a3122;border:3px solid #2a1d15;border-radius:16px;box-shadow:4px 4px 0 #2a1d1526;font:600 .84rem/1.6 var(--sans,"Segoe UI",Arial,sans-serif);pointer-events:none;animation:thought-in .22s steps(3,end) both;--tail:50%}
+.roam-thought{position:absolute;bottom:calc(22px*var(--cat-scale) + 14px);left:0;width:max-content;max-width:min(250px,calc(100vw - 24px));padding:10px 14px;background:#fffbea;color:#3a3122;border:3px solid #2a1d15;border-radius:28px;box-shadow:4px 4px 0 #2a1d1526,inset 0 0 0 4px #fffbea,inset 0 0 0 5px #2a1d1514;font:italic 500 .9rem/1.6 var(--serif,Georgia,serif);pointer-events:none;animation:thought-in .22s steps(3,end) both;--tail:50%}
 .roam-thought p{margin:0}
 .roam-thought:before,.roam-thought:after{content:"";position:absolute;background:#fffbea;border:3px solid #2a1d15;border-radius:50%}
 .roam-thought:before{width:12px;height:12px;bottom:-14px;left:calc(var(--tail) - 12px)}
@@ -33,3 +33,5 @@
 .roam-thought.side{bottom:calc(10px*var(--cat-scale))}
 .roam-thought.side:before{bottom:8px;left:var(--tail)}
 .roam-thought.side:after{display:none}
+.roam-dot{position:absolute;width:5px;height:5px;bottom:-32px;left:calc(var(--tail) + 3px);background:#fffbea;border:2px solid #2a1d15;border-radius:50%}
+.roam-thought.side .roam-dot{display:none}

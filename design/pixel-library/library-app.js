@@ -489,7 +489,7 @@
     const over = budget !== null && est.high > budget;
     return `<div class="estimate-head"><b>${t('אומדן עלות (לפני שליחה בפועל)', 'Cost estimate (before anything is sent)')}</b><span class="muted small">${t('מחירון מדומה בהדגמה', 'simulated price list in the demo')}</span></div>
       <p><bdi>${money(est.low)}–${money(est.high)}</bdi> · ${est.units} ${t('מקטעים', 'segments')} · ${est.chapters} ${t('פרקים', 'chapters')}</p>
-      ${budget === null ? '' : over ? `<p class="bad">${t(`האומדן העליון חורג מהתקציב (${money(budget)}). אם התקציב ייגמר, העבודה תיעצר ותבקש החלטה.`, `The upper estimate exceeds the budget (${money(budget)}). If it runs out, the job stops and asks for a decision.`)}</p>` : `<p class="good">${t('בתוך התקציב.', 'Within budget.')} ${t(`בערך ${Math.max(1, Math.floor(est.mid / 1.5))} קופסאות טונה, לפי החתול.`, `About ${Math.max(1, Math.floor(est.mid / 1.5))} cans of tuna, says the cat.`)}</p>`}`;
+      ${budget === null ? '' : over ? `<p class="bad">${t(`האומדן העליון חורג מהתקציב (${money(budget)}). אם התקציב ייגמר, העבודה תיעצר ותבקש החלטה.`, `The upper estimate exceeds the budget (${money(budget)}). If it runs out, the job stops and asks for a decision.`)}</p>` : `<p class="good">${t('בתוך התקציב.', 'Within budget.')} ${t(`בערך ${Math.max(1, Math.floor(est.mid / 1.5))} קופסאות טונה, לפי חשבון החתול.`, `About ${Math.max(1, Math.floor(est.mid / 1.5))} cans of tuna, by the cat’s reckoning.`)}</p>`}`;
   }
   function catalogCard(est) {
     const f = S.form, b = budgetValue();
