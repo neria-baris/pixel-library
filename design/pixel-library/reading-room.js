@@ -5,13 +5,7 @@
   if (room.dataset.design !== 'a') return;
   document.documentElement.classList.add('reading-room');
   const find = id => document.getElementById(id);
-  const pixelChevron = direction => {
-    const span = document.createElement('span');
-    span.className = `room-chevron ${direction === 'right' ? 'is-right' : ''}`;
-    span.setAttribute('aria-hidden', 'true');
-    span.innerHTML = '<svg viewBox="0 0 16 16" shape-rendering="crispEdges" focusable="false"><path fill="currentColor" d="M10 1H7v3H4v3H1v2h3v3h3v3h3v-4H7V9H4V7h3V5h3z"/></svg>';
-    return span;
-  };
+  const trashIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg>';
   function stepButton(input, delta, label) {
     const button = document.createElement('button');
     button.type = 'button';
@@ -105,26 +99,86 @@
       const previous = button.dataset.action === 'prev-segment';
       button.textContent = previous ? 'הקודם' : 'הבא';
       button.classList.add('room-page-button');
-      button.prepend(pixelChevron(previous ? 'right' : 'left'));
       button.parentElement.classList.add('room-pagination');
     });
-    document.querySelectorAll('button,a').forEach(control => {
-      if (control.querySelector('.room-chevron')) return;
-      const walker = document.createTreeWalker(control, NodeFilter.SHOW_TEXT);
-      let node, direction;
-      while ((node = walker.nextNode())) {
-        if (/[←→]/.test(node.textContent)) {
-          direction = node.textContent.includes('→') ? 'right' : 'left';
-          node.textContent = node.textContent.replace(/[←→]/g, '').trim();
+    // Navigation uses words. Arrow symbols also disappear from paired-language metadata.
+    document.querySelectorAll('#app,#modal').forEach(root => {
+      root.querySelectorAll('.room-chevron').forEach(node => node.remove());
+      root.querySelectorAll('button,a,.book-meta,.result-heading>p').forEach(element => {
+        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+          if (/[←→]/.test(node.textContent)) {
+            const control = node.parentElement.closest('button,a');
+            node.textContent = node.textContent.replace(/\s*[←→]\s*/g, control ? ' ' : ' · ').trim();
+          }
         }
-      }
-      if (direction) control.append(pixelChevron(direction));
+      });
     });
+  }
+  function enhanceLibrary() {
+    const eyebrow = document.querySelector('.library-hero .eyebrow');
+    if (eyebrow) eyebrow.textContent = 'ספרייה אישית';
+    const intro = document.querySelector('.library-hero .hero-copy>p');
+    if (intro) intro.textContent = 'תרגום מסמכים, קריאה ולמידת שפה.';
+    const continuation = document.querySelector('.continue-card');
+    if (continuation) continuation.hidden = state.removedBooks.has('garden');
+    const count = document.querySelector('.section-title h2 .muted');
+    const remaining = books.length - state.removedBooks.size;
+    if (count) count.textContent = `/ ${String(remaining).padStart(2, '0')}`;
+    document.querySelectorAll('.book-card').forEach(card => {
+      if (card.querySelector('[data-room-delete]')) return;
+      const id = card.querySelector('[data-book]').dataset.book;
+      const book = books.find(book => book.id === id);
+      const footer = document.createElement('div');
+      footer.className = 'room-card-footer';
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'room-delete';
+      button.dataset.roomDelete = id;
+      button.setAttribute('aria-label', `מחיקת ${book.title} מהספרייה`);
+      button.innerHTML = `${trashIcon}<span>מחיקה</span>`;
+      footer.append(button);
+      card.querySelector('.book-body').append(footer);
+    });
+    document.querySelector('.room-undo')?.remove();
+    const section = document.querySelector('.section-title');
+    if (section && state.lastRemovedBook) {
+      const book = books.find(book => book.id === state.lastRemovedBook);
+      const notice = document.createElement('div');
+      notice.className = 'room-undo';
+      const message = document.createElement('span');
+      message.textContent = `״${book.title}״ הוסר מהספרייה.`;
+      const undo = document.createElement('button');
+      undo.type = 'button';
+      undo.className = 'btn secondary small';
+      undo.dataset.roomUndo = 'true';
+      undo.textContent = 'ביטול המחיקה';
+      notice.append(message, undo);
+      section.before(notice);
+    }
+    const empty = document.querySelector('#books .empty');
+    if (remaining === 0 && empty) {
+      empty.innerHTML = '<h3>הספרייה ריקה</h3><p>אפשר להוסיף ספר חדש או לבטל את המחיקה האחרונה.</p><button class="btn secondary" data-route="new">הוספת ספר</button>';
+    }
+  }
+  let pendingDelete = null;
+  function confirmDelete(id, trigger) {
+    const book = books.find(book => book.id === id);
+    if (!book || state.removedBooks.has(id)) return;
+    const card = trigger.closest('.book-card');
+    const neighbor = card.nextElementSibling || card.previousElementSibling;
+    pendingDelete = { id, neighbor: neighbor?.querySelector('[data-book]')?.dataset.book };
+    trigger.focus();
+    modal('מחיקת ספר',
+      `<p class="room-delete-title">${esc(book.title)}</p><p>הספר יוסר מספריית ההדגמה. קובץ המקור במחשב אינו נמחק.</p><p>אפשר לבטל את המחיקה במסך הספרייה. רענון הדף מחזיר את כל ספרי הדוגמה.</p>`,
+      '<button class="btn secondary" data-action="close-modal" autofocus>להשאיר בספרייה</button><button class="btn room-danger" data-room-confirm-delete="true">מחיקת הספר</button>');
   }
   window.readingRoomPolish = () => {
     document.querySelectorAll('input[type="range"]').forEach(enhanceRange);
     enhanceBudget();
     enhanceNavigation();
+    enhanceLibrary();
   };
   document.addEventListener('input', event => {
     if (event.target.matches('input[type="range"]')) updateRange(event.target);
@@ -138,6 +192,37 @@
     }
   });
   document.addEventListener('click', event => {
+    const deletion = event.target.closest('[data-room-delete]');
+    if (deletion) confirmDelete(deletion.dataset.roomDelete, deletion);
+    if (event.target.closest('[data-room-confirm-delete]') && pendingDelete) {
+      const { id, neighbor } = pendingDelete;
+      pendingDelete = null;
+      closeModal();
+      if (state.removedBooks.has(id)) return;
+      state.removedBooks.add(id);
+      state.lastRemovedBook = id;
+      if (state.readerBook === books.find(book => book.id === id).title) {
+        state.readerBook = books.find(book => !state.removedBooks.has(book.id))?.title || 'ספר לדוגמה';
+      }
+      if (state.job?.book?.id === id) {
+        clearInterval(progressTimer);
+        state.job = null;
+        state.paused = true;
+      }
+      render();
+      const next = document.querySelector(`[data-room-delete="${neighbor}"]`) ||
+        document.querySelector('#books button') || document.querySelector('[data-room-undo]');
+      next?.focus();
+      toast('הספר הוסר מספריית ההדגמה. אפשר לבטל את המחיקה.');
+    }
+    if (event.target.closest('[data-room-undo]') && state.lastRemovedBook) {
+      const id = state.lastRemovedBook;
+      state.removedBooks.delete(id);
+      state.lastRemovedBook = null;
+      render();
+      document.querySelector(`[data-room-delete="${id}"]`)?.focus();
+      toast('הספר חזר לספרייה.');
+    }
     const station = event.target.closest('[data-room-range]');
     const step = event.target.closest('[data-room-step]');
     if (station) {

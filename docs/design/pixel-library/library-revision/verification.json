@@ -1,0 +1,127 @@
+{
+    "time_utc":  "2026-10-15T09:09:14.4597774Z",
+    "checks":  30,
+    "passed":  30,
+    "results":  [
+                    {
+                        "name":  "Browser error instrumentation initialized",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Library name visible in page and title",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Shelf illustration replaces furnished room",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Delete is present on every card",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Arrow glyphs and icons removed from navigation",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Library at 390 no horizontal overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Delete targets at 390 are visible and comfortable",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Library at 320 no horizontal overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Delete targets at 320 are visible and comfortable",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Deletion confirmation names book and protects source file",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Cancel keeps books and restores focus",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Escape retains book and restores delete trigger",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Confirm removes selected book and updates count",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Focus moves to adjacent book",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Deleted book absent from search results",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Deletion survives navigation and filter rebuild",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Undo restores book and focus",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "All deletions produce meaningful empty state",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Deleted reading suggestion is hidden",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Undo from empty state restores last book",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Reload resets only sample inventory",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Keyboard minimum preserved",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Matte native slider still supports RTL drag",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Exact budget remains precise",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Controls at 320 no horizontal overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Arrow cleanup never changes edited content",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Previous and next remain labeled without arrow icons",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "No duplicate delete controls",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "No script errors after deletion and navigation",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "B keeps baseline identity and artwork",
+                        "passed":  true
+                    }
+                ]
+}

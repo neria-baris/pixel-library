@@ -78,7 +78,7 @@ try {
    Capture "reader-$size"
  }
  Js 'document.querySelector("[data-route=library]").click();document.querySelector("[data-book=memory]").click()'
- Check 'Navigation has words with pixel symbols' '[...document.querySelectorAll(".room-page-button")].every(b=>b.querySelector("svg") && b.textContent.trim().length>1 && b.getBoundingClientRect().height>=48)'
+ Check 'Navigation has words without arrow symbols' '[...document.querySelectorAll(".room-page-button")].every(b=>!b.querySelector("svg") && b.textContent.trim().length>1 && b.getBoundingClientRect().height>=48)'
  Js 'document.querySelector("[data-action=next-segment]").click()'
  Check 'Labeled next button preserves navigation behavior' 'document.querySelector("#segment-number").textContent.includes("2")'
  Check 'No hairline arrow-only buttons' '![...document.querySelectorAll("button")].some(b=>/^[←→]$/.test(b.textContent.trim()))'
