@@ -1,0 +1,203 @@
+{
+    "time_utc":  "2026-10-15T12:36:19.9710028Z",
+    "checks":  49,
+    "passed":  49,
+    "results":  [
+                    {
+                        "name":  "Instrumentation and single reserved theatre initialized",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Sound starts off without constructing audio context",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Initial cat waits before appearing",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Automatic occasional visit peeks without a click",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Jump really changes the rendered cat position",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Feline thought has trailing dots and a closed unanimated mouth",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Removed note and movement toggle never appear",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Automatic thoughts does not interrupt screen-reader live region",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Shelf books light and dust animate independently",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Cat and thought bubble stay inside stage away from primary action",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Visit exits instead of remaining on screen",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Next occasional visit is scheduled30 to45 seconds later",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Scheduled recurrence starts another visit without stealing focus",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Manual summon announces a thought while retaining animation",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Dismiss restores focus before hiding thought control",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Open model dialog pauses scene scheduler",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Closing dialog resumes a single scheduler",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Hidden-document handler stops automatic work",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Actual offscreen scene stops its timer",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Returning onscreen resumes once",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "A intentionally keeps animation under OS reduced-motion preference",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Thought theatre at320 has no horizontal overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Audio graph is created only after explicit opt-in",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Muted jump creates no audio voices",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Scene at390 preserves width and44px controls",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Scene at320 preserves width and44px controls",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Search rerender keeps one cat one dust layer one timer",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Reader visit stays in reserved footer not over reading text",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Reader thought at320 fits vertically inside reserved stage",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Processing mounts one decorative animated book without changing progress semantics",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Book page physically flips during running job",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Job pause freezes both progress and page pose",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Job resume restores animation and real demo progress",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Translation stage shows moving letters between book pages",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Review stage changes to a moving stamp without claiming approval",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Binding stage actually animates the book",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Process animation also intentionally continues under OS reduced motion",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Open dialog suspends process decoration independently of footer cat",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Hidden document suspends process animation",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Translation at390 fits and remains visible",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Translation at320 fits and remains visible",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Offscreen process scene pauses its decoration",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Finishing removes process scene and retains editable sample result",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Quiet-art preference hides theatre and pauses animation",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "No runtime errors or external resources",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Back-forward-cache lifecycle remounts one muted scene and scheduler",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Unsupported audio remains muted with visible explanation",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "B remains free of motion layer and audio initialization",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "B retains its original reduced-motion policy",
+                        "passed":  true
+                    }
+                ]
+}

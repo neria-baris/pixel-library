@@ -1,0 +1,151 @@
+{
+    "time_utc":  "2026-10-15T12:34:08.7015874Z",
+    "checks":  36,
+    "passed":  36,
+    "results":  [
+                    {
+                        "name":  "Browser instrumentation initialized",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Header always exposes key and model",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Missing key is explicit and not only a color",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Book illustration wraps data instead of duplicating title above",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Every framed book retains delete and primary action",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Original mascot and humor are present",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Key dialog explains saved is not verified connection",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "No secret entry fields or persistent storage",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Available key differs from saved key",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Saved key has both name and visual badge",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Key status dialog at320 fits and remains readable",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Closing keys restores header focus",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Provider filtering shows direct native model choices",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Model radios preserve native keyboard navigation",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Cancel discards draft model",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Escape discards draft and restores model trigger",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Apply updates visible header choice and matching-provider key label",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Chapter reviewer can inherit translator independently",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Independent reviewer retained after reopening",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Filtering never implicitly changes chosen model",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Model chooser at390 fits width",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Model chooser at320 fits width",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Selected translator appears in pretranslation summary",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Confirmation exposes translator and independent reviewers",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Header and library at390 no horizontal overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Header and library at320 no horizontal overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Long title is fully visible with no clamp",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Long title atdesktop remains within book frame",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Unbroken title cannot force horizontal overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Framed cards preserve delete undo and focus",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Search rerenders do not duplicate mascot controls or frame decoration",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Quiet mode keeps book information and key status",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Model and simulated key persist across navigation",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "No script errors or external resources",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Reload resets all prototype selections and simulated keys",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "B baseline has no added key model or book-frame layer",
+                        "passed":  true
+                    }
+                ]
+}

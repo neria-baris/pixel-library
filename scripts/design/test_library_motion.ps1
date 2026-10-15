@@ -1,7 +1,7 @@
-﻿param([int]$DebugPort=9332,[string]$BaseUrl='http://127.0.0.1:8817')
+﻿param([int]$DebugPort=9332,[string]$BaseUrl='http://127.0.0.1:8817',[string]$OutputDirectory='docs/design/pixel-library/cat-thoughts-translation')
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/cdp_helpers.ps1"
-$evidence=[IO.Path]::GetFullPath((Join-Path (Get-Location) 'docs/design/pixel-library/library-motion'))
+$evidence=[IO.Path]::GetFullPath((Join-Path (Get-Location) $OutputDirectory))
 [void][IO.Directory]::CreateDirectory($evidence)
 $results=New-Object Collections.Generic.List[object]
 function Js([string]$Code){Invoke-BrowserJs ('(async()=>{'+$Code+'})()')|Out-Null}
@@ -45,11 +45,12 @@ const NativeAudio=window.AudioContext;if(NativeAudio)window.AudioContext=class e
  Start-Sleep -Milliseconds 450
  Check 'Jump really changes the rendered cat position' 'document.querySelector(".cat-actor").getBoundingClientRect().top<__jumpStart-10'
  Capture 'cat-jump-desktop'
- WaitFor 'document.querySelector(".library-theatre").dataset.phase==="talking"'
- Check 'Talking includes a readable local phrase and animated mouth' '!document.querySelector(".cat-bubble").hidden && document.querySelector(".cat-bubble p").textContent.length>15 && getComputedStyle(document.querySelector(".cat-mouth-open")).animationName==="cat-chatter"'
- Check 'Automatic speech does not interrupt screen-reader live region' '!document.querySelector("#announcer").textContent.includes("חתול הספרייה") && !document.querySelector(".cat-bubble").hasAttribute("aria-live")'
+ WaitFor 'document.querySelector(".library-theatre").dataset.phase==="thinking"'
+ Check 'Feline thought has trailing dots and a closed unanimated mouth' '!document.querySelector(".cat-bubble").hidden && document.querySelector(".cat-bubble p").textContent.includes("הספר הזה חם") && !document.querySelector(".cat-mouth-open") && getComputedStyle(document.querySelector(".cat-mouth-closed")).animationName==="none" && getComputedStyle(document.querySelector(".cat-bubble"),"::after").borderRadius==="50%"'
+ Check 'Removed note and movement toggle never appear' '!document.querySelector("#app").textContent.includes("ביקור קטן מדי פעם. בלי להפריע לקריאה.") && document.querySelector("[data-library-motion]")===null && document.querySelector(".motion-note").hidden'
+ Check 'Automatic thoughts does not interrupt screen-reader live region' '!document.querySelector("#announcer").textContent.includes("חתול הספרייה") && !document.querySelector(".cat-bubble").hasAttribute("aria-live")'
  Check 'Shelf books light and dust animate independently' 'document.querySelectorAll(".hero-art .shelf-volume").length===8 && getComputedStyle(document.querySelector(".hero-art .shelf-scene")).animationName==="old-shelf" && getComputedStyle(document.querySelector(".library-dust i")).animationName==="dust-drift"'
- Check 'Cat and bubble stay inside stage away from primary action' '(()=>{const b=document.querySelector(".cat-bubble").getBoundingClientRect(),s=document.querySelector(".cat-stage").getBoundingClientRect(),a=document.querySelector(".hero-copy button").getBoundingClientRect();return b.left>=s.left && b.right<=s.right && (b.right<=a.left||b.left>=a.right||b.bottom<=a.top||b.top>=a.bottom)})()'
+ Check 'Cat and thought bubble stay inside stage away from primary action' '(()=>{const b=document.querySelector(".cat-bubble").getBoundingClientRect(),s=document.querySelector(".cat-stage").getBoundingClientRect(),a=document.querySelector(".hero-copy button").getBoundingClientRect();return b.left>=s.left && b.right<=s.right && (b.right<=a.left||b.left>=a.right||b.bottom<=a.top||b.top>=a.bottom)})()'
  Capture 'cat-desktop'
  WaitFor 'document.querySelector(".library-theatre").dataset.phase==="leaving"' 8000
  Check 'Visit exits instead of remaining on screen' 'getComputedStyle(document.querySelector(".cat-actor")).animationName==="cat-exit"'
@@ -57,14 +58,13 @@ const NativeAudio=window.AudioContext;if(NativeAudio)window.AudioContext=class e
  Check 'Next occasional visit is scheduled30 to45 seconds later' '[...__motionTasks.values()].some(t=>t.delay>=30000&&t.delay<45000) && __motionTasks.size===1'
  Js 'document.querySelector("[data-workbench-key]").focus();const [id,task]=[...__motionTasks.entries()].find(([,t])=>t.delay>=30000);clearTimeout(id);task.callback()'
  Check 'Scheduled recurrence starts another visit without stealing focus' 'document.querySelector(".library-theatre").dataset.phase==="peeking" && document.activeElement.matches("[data-workbench-key]")'
- Js 'document.querySelector("[data-library-motion]").click()'
- Check 'Pause stops timers and ambient animation' '!document.body.classList.contains("library-awake") && __motionTasks.size===0 && getComputedStyle(document.querySelector(".hero-art .shelf-scene")).animationName==="none"'
  Js 'document.querySelector("[data-library-summon]").click()'
- WaitFor 'document.querySelector("#announcer").textContent.includes("חתול הספרייה")'
- Check 'Manual summon while paused gives static accessible speech' 'document.querySelector(".library-theatre").dataset.phase==="static" && !document.querySelector(".cat-bubble").hidden && document.querySelector("#announcer").textContent.includes("חתול הספרייה") && __motionTasks.size===0'
+ WaitFor 'document.querySelector("#announcer").textContent.includes("חתול הספרייה חושב")'
+ WaitFor 'document.querySelector(".library-theatre").dataset.phase==="thinking"'
+ Check 'Manual summon announces a thought while retaining animation' 'document.querySelector("#announcer").textContent.includes("חתול הספרייה חושב") && document.body.classList.contains("library-awake")'
  Js 'document.querySelector("[data-library-dismiss]").focus();document.querySelector("[data-library-dismiss]").click()'
- Check 'Dismiss restores focus before hiding speech control' 'document.querySelector(".cat-bubble").hidden && document.activeElement.matches("[data-library-summon]")'
- Js 'document.querySelector("[data-library-motion]").click();document.querySelector("[data-workbench-model]").click()'
+ Check 'Dismiss restores focus before hiding thought control' 'document.querySelector(".cat-bubble").hidden && document.activeElement.matches("[data-library-summon]")'
+ Js 'document.querySelector("[data-workbench-model]").click()'
  Start-Sleep -Milliseconds 100
  Check 'Open model dialog pauses scene scheduler' '!document.body.classList.contains("library-awake") && __motionTasks.size===0'
  Js 'document.querySelector("#modal [data-action=close-modal]").click()'
@@ -82,13 +82,13 @@ const NativeAudio=window.AudioContext;if(NativeAudio)window.AudioContext=class e
  WaitFor 'document.body.classList.contains("library-awake")'
  Check 'Returning onscreen resumes once' '__motionTasks.size===1'
  Send-Cdp 'Emulation.setEmulatedMedia' @{features=@(@{name='prefers-reduced-motion';value='reduce'})}|Out-Null
- WaitFor '!document.body.classList.contains("library-awake")'
  Js 'document.querySelector("[data-library-summon]").click()'
- Check 'OS reduced motion allows static speech but no movement or timers' 'document.querySelector("[data-library-motion]").disabled && document.querySelector(".library-theatre").dataset.phase==="static" && __motionTasks.size===0 && getComputedStyle(document.querySelector(".cat-actor")).animationName==="none"'
+ WaitFor 'document.querySelector(".library-theatre").dataset.phase==="thinking"'
+ Check 'A intentionally keeps animation under OS reduced-motion preference' 'document.body.classList.contains("library-awake") && !document.querySelector("[data-library-motion]") && getComputedStyle(document.querySelector(".cat-tail")).animationName==="tail-flick"'
  Width 320
  Js 'document.querySelector(".cat-stage").scrollIntoView({block:"center"})'
- Check 'Reduced-motion theatre at320 has no horizontal overflow' 'document.documentElement.scrollWidth<=innerWidth+1'
- Capture 'cat-reduced-320'
+ Check 'Thought theatre at320 has no horizontal overflow' 'document.documentElement.scrollWidth<=innerWidth+1'
+ Capture 'cat-os-reduce-320'
  Send-Cdp 'Emulation.setEmulatedMedia' @{features=@(@{name='prefers-reduced-motion';value='no-preference'})}|Out-Null
  Width 1440 1250
  Js 'window.scrollTo(0,0)'
@@ -102,7 +102,7 @@ const NativeAudio=window.AudioContext;if(NativeAudio)window.AudioContext=class e
  foreach($size in @(390,320)){
   Width $size
   Js 'document.querySelector(".cat-stage").scrollIntoView({block:"center"});document.querySelector("[data-library-summon]").click()'
-  WaitFor 'document.querySelector(".library-theatre").dataset.phase==="talking"'
+  WaitFor 'document.querySelector(".library-theatre").dataset.phase==="thinking"'
   Check "Scene at$size preserves width and44px controls" 'document.documentElement.scrollWidth<=innerWidth+1 && [...document.querySelectorAll(".library-theatre button")].every(b=>b.getBoundingClientRect().height>=44)'
   Capture "cat-$size"
  }
@@ -111,9 +111,65 @@ const NativeAudio=window.AudioContext;if(NativeAudio)window.AudioContext=class e
  Js 'document.querySelector("[data-route=learning]").click()'
  Check 'Reader visit stays in reserved footer not over reading text' 'document.querySelectorAll(".footer-theatre").length===1 && !document.querySelector(".reader-copy .library-theatre") && getComputedStyle(document.querySelector(".footer-theatre")).position!=="fixed"'
  Js 'document.querySelector(".footer-theatre").scrollIntoView({block:"center"});document.querySelector("[data-library-summon]").click()'
- WaitFor 'document.querySelector(".library-theatre").dataset.phase==="talking"'
- Check 'Reader speech at320 fits vertically inside reserved stage' '(()=>{const b=document.querySelector(".cat-bubble").getBoundingClientRect(),s=document.querySelector(".cat-stage").getBoundingClientRect();return b.top>=s.top && b.bottom<=s.bottom && b.right<=s.right && b.left>=s.left})()'
+ WaitFor 'document.querySelector(".library-theatre").dataset.phase==="thinking"'
+ Check 'Reader thought at320 fits vertically inside reserved stage' '(()=>{const b=document.querySelector(".cat-bubble").getBoundingClientRect(),s=document.querySelector(".cat-stage").getBoundingClientRect();return b.top>=s.top && b.bottom<=s.bottom && b.right<=s.right && b.left>=s.left})()'
  Capture 'reader-cat-320'
+ Navigate 'a.html'
+ Width 1440 1100
+ Js 'document.querySelector("[data-route=new]").click();document.querySelector("[data-action=sample]").click();document.querySelector("[data-action=confirm-job]").click();document.querySelector("[data-action=start-job]").click()'
+ WaitFor 'document.querySelector(".translation-press")?.classList.contains("translation-running")'
+ Check 'Processing mounts one decorative animated book without changing progress semantics' 'document.querySelectorAll(".translation-press").length===1 && document.querySelector(".translation-press").getAttribute("aria-hidden")==="true" && document.querySelector("#job-progress").max===100 && document.querySelector("#job-pill").textContent.includes("הדמיה")'
+ Js 'window.__leafBefore=getComputedStyle(document.querySelector(".press-turn")).transform'
+ Start-Sleep -Milliseconds 500
+ Check 'Book page physically flips during running job' 'getComputedStyle(document.querySelector(".press-turn")).transform!==__leafBefore && getComputedStyle(document.querySelector(".press-turn")).animationPlayState==="running"'
+ Capture 'translation-opening-desktop'
+ Js 'document.querySelector("[data-action=pause-job]").click()'
+ Start-Sleep -Milliseconds 60
+ Js 'window.__pausedProgress=state.progress;window.__pausedLeaf=getComputedStyle(document.querySelector(".press-turn")).transform'
+ Start-Sleep -Milliseconds 800
+ Check 'Job pause freezes both progress and page pose' 'state.progress===__pausedProgress && getComputedStyle(document.querySelector(".press-turn")).transform===__pausedLeaf && !document.querySelector(".translation-press").classList.contains("translation-running")'
+ Capture 'translation-paused-desktop'
+ Js 'document.querySelector("[data-action=pause-job]").click()'
+ Start-Sleep -Milliseconds 750
+ Check 'Job resume restores animation and real demo progress' 'state.progress>__pausedProgress && document.querySelector(".translation-press").classList.contains("translation-running")'
+ Js 'state.progress=32;updateProgress()'
+ Check 'Translation stage shows moving letters between book pages' 'document.querySelector(".translation-press").dataset.step==="translating" && getComputedStyle(document.querySelector(".press-letters")).display!=="none" && getComputedStyle(document.querySelector(".press-letters span")).animationPlayState==="running"'
+ Capture 'translation-letters-desktop'
+ Js 'state.progress=64;updateProgress()'
+ Check 'Review stage changes to a moving stamp without claiming approval' 'document.querySelector(".translation-press").dataset.step==="reviewing" && getComputedStyle(document.querySelector(".press-stamp")).display!=="none" && document.querySelector(".notice").textContent.includes("אינו אישור")'
+ Capture 'translation-review-desktop'
+ Js 'state.progress=88;updateProgress()'
+ Js 'window.__bindingPose=getComputedStyle(document.querySelector(".press-book")).transform'
+ Start-Sleep -Milliseconds 500
+ Check 'Binding stage actually animates the book' 'document.querySelector(".translation-press").dataset.step==="binding" && getComputedStyle(document.querySelector(".press-book")).animationPlayState==="running" && getComputedStyle(document.querySelector(".press-book")).transform!==__bindingPose'
+ Capture 'translation-binding-desktop'
+ Js 'state.progress=32;updateProgress()'
+ Send-Cdp 'Emulation.setEmulatedMedia' @{features=@(@{name='prefers-reduced-motion';value='reduce'})}|Out-Null
+ Check 'Process animation also intentionally continues under OS reduced motion' 'getComputedStyle(document.querySelector(".press-turn")).animationPlayState==="running" && getComputedStyle(document.querySelector(".press-turn")).animationName==="press-leaf"'
+ Send-Cdp 'Emulation.setEmulatedMedia' @{features=@(@{name='prefers-reduced-motion';value='no-preference'})}|Out-Null
+ Js 'document.querySelector("[data-workbench-key]").click()'
+ WaitFor '!document.querySelector(".translation-press").classList.contains("translation-running")'
+ Check 'Open dialog suspends process decoration independently of footer cat' 'getComputedStyle(document.querySelector(".press-turn")).animationPlayState==="paused"'
+ Js 'document.querySelector("#modal [data-action=close-modal]").click()'
+ WaitFor 'document.querySelector(".translation-press").classList.contains("translation-running")'
+ Js 'Object.defineProperty(document,"hidden",{configurable:true,value:true});document.dispatchEvent(new Event("visibilitychange"))'
+ Check 'Hidden document suspends process animation' '!document.querySelector(".translation-press").classList.contains("translation-running")'
+ Js 'delete document.hidden;document.dispatchEvent(new Event("visibilitychange"))'
+ foreach($size in @(390,320)){
+  Width $size
+  Js 'document.querySelector(".translation-press").scrollIntoView({block:"center"})'
+  WaitFor 'document.querySelector(".translation-press").classList.contains("translation-running")'
+  Check "Translation at$size fits and remains visible" 'document.documentElement.scrollWidth<=innerWidth+1 && document.querySelector(".translation-press").getBoundingClientRect().width<=innerWidth'
+  Capture "translation-$size"
+ }
+ Width 1440 500
+ Js 'window.scrollTo(0,document.documentElement.scrollHeight)'
+ WaitFor '!document.querySelector(".translation-press").classList.contains("translation-running")'
+ Check 'Offscreen process scene pauses its decoration' 'getComputedStyle(document.querySelector(".press-turn")).animationPlayState==="paused"'
+ Js 'document.querySelector(".translation-press").scrollIntoView({block:"center"})'
+ WaitFor 'document.querySelector(".translation-press").classList.contains("translation-running")'
+ Js 'document.querySelector("[data-action=finish-demo]").click()'
+ Check 'Finishing removes process scene and retains editable sample result' '!document.querySelector(".translation-press") && document.querySelector("#review-target")!==null'
  Js 'document.querySelector("[data-route=settings]").click();document.querySelector("#art-enabled").click();document.querySelector("[data-route=library]").click()'
  Check 'Quiet-art preference hides theatre and pauses animation' 'getComputedStyle(document.querySelector(".library-theatre")).display==="none" && !document.body.classList.contains("library-awake") && __motionTasks.size===0'
  Check 'No runtime errors or external resources' '__motionErrors.length===0 && performance.getEntriesByType("resource").every(r=>r.name.startsWith(location.origin)||r.name.startsWith("blob:"))'
@@ -126,6 +182,8 @@ const NativeAudio=window.AudioContext;if(NativeAudio)window.AudioContext=class e
  Check 'Unsupported audio remains muted with visible explanation' 'document.querySelector("[data-library-sound]").getAttribute("aria-pressed")==="false" && document.querySelector(".motion-note").textContent.includes("אינם זמינים")'
  Navigate 'b.html'
  Check 'B remains free of motion layer and audio initialization' 'document.querySelector(".library-theatre")===null && __audioCreated===0'
+ Send-Cdp 'Emulation.setEmulatedMedia' @{features=@(@{name='prefers-reduced-motion';value='reduce'})}|Out-Null
+ Check 'B retains its original reduced-motion policy' 'getComputedStyle(document.querySelector(".btn")).transitionDuration==="0s"'
 } finally {
  Send-Cdp 'Emulation.setEmulatedMedia' @{features=@()}|Out-Null
  $script:CdpSocket.Dispose()
