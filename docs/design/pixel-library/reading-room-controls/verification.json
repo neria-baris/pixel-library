@@ -1,0 +1,107 @@
+{
+    "time_utc":  "2026-10-15T08:47:49.4822771Z",
+    "checks":  25,
+    "passed":  25,
+    "results":  [
+                    {
+                        "name":  "Native range retains label and large pointer zone",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Primary stations have 56px targets",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Keyboard End updates fill and label",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Keyboard Home sets minimum",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Pointer drag native RTL slider to maximum",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Direct station updates fill and summary",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Budget step preserves exact cents",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Budget decrease clamps and disables at minimum",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Empty exact input recovers without NaN",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Settings at 390 no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Number steps at 390 remain large",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Settings at 320 no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Number steps at 320 remain large",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Effort stations update native value and description",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Text size step updates reader and output",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Text size upper bound disables increase",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Effort at 390 no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Reader at 390 no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Effort at 320 no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Reader at 320 no overflow",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Navigation has words with pixel symbols",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "Labeled next button preserves navigation behavior",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "No hairline arrow-only buttons",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "No duplicate range enhancement",
+                        "passed":  true
+                    },
+                    {
+                        "name":  "B remains without A enhancement",
+                        "passed":  true
+                    }
+                ]
+}

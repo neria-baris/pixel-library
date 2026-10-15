@@ -40,6 +40,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/design/preview_p
 
 - מחקר וממצאי קוד: `docs/design/pixel-library/RESEARCH_AND_AUDIT_HE.md`.
 - השוואה, מגבלות ומפת חיבור עתידית: `docs/design/pixel-library/COMPARISON_HE.md`.
+- ליטוש חדר הקריאה שנבחר — מחוונים, כפתורים וגלילה: `docs/design/pixel-library/READING_ROOM_CONTROLS_HE.md`.
 - חוזה: `audit/contracts/ux_pixel_library.md`.
 - בדיקות Chrome מקומיות: `scripts/design/test_pixel_library.ps1`; הוראות שחזור בתיעוד ההשוואה.
 

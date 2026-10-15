@@ -81,6 +81,7 @@ function render(focus=false) {
   document.body.classList.toggle('no-art',!state.art);
   if(focus){$('main').focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
   if(state.route==='library') renderBooks();
+  window.readingRoomPolish?.();
 }
 function page(){return ({library:libraryPage,new:newPage,processing:processingPage,result:resultPage,learning:learningPage,settings:settingsPage}[state.route]||libraryPage)();}
 function heading(eyebrow,title,text,action=''){return `<div class="page-heading"><div><span class="eyebrow">${eyebrow}</span><h1>${title}</h1>${text?`<p>${text}</p>`:''}</div>${action}</div>`;}

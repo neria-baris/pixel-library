@@ -88,7 +88,7 @@ try {
         Check "$variant result remains draft" 'document.querySelector("#review-target")!==null && document.querySelector(".result-layout .pill").textContent.includes("לא אושרה")'
         Js 'document.querySelector("#review-target").value="עריכת בדיקה <script>unsafe</script> & נוסח";document.querySelector("[data-action=save-edit]").click();document.querySelector("[data-action=next-segment]").click();document.querySelector("[data-action=prev-segment]").click()'
         Check "$variant edit preserved across segments" 'document.querySelector("#review-target").value.includes("עריכת בדיקה <script>")'
-        Check "$variant no markup injection" 'document.querySelectorAll("script").length===1 && !window.unsafe'
+        Check "$variant no markup injection" 'document.querySelector("script:not([src])")===null && !window.unsafe'
         Js 'document.querySelector("[data-action=export]").click()'
         Check "$variant sample export dialog" 'document.querySelector("#modal").textContent.includes("אינו תרגום של קובץ") && document.querySelector("[data-action=download-sample]")!==null'
         # Browser captures downloaded data URLs through a temporary click interceptor without writing to user Downloads.
