@@ -1,0 +1,35 @@
+/* The roaming cat lives in document coordinates, above content and below the header. */
+.roam-cat{--cat-scale:3;position:absolute;left:0;top:0;width:calc(32px*var(--cat-scale));height:calc(22px*var(--cat-scale));z-index:30;pointer-events:none;will-change:transform;transition:opacity .25s}
+.roam-cat[hidden]{display:none}
+.roam-cat.away,.roam-cat.paused{opacity:0}
+.roam-cat.paused{transition:none}
+.roam-body{all:unset;display:block;width:100%;height:100%;pointer-events:auto;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.roam-body:focus-visible{outline:3px dashed var(--brass-2,#e2c27f);outline-offset:2px}
+.roam-cat.held .roam-body{cursor:grabbing}
+.roam-body svg{display:block;width:100%;height:100%;overflow:visible;transform-origin:50% 100%;filter:drop-shadow(0 calc(1px*var(--cat-scale)) 0 #2a1d1533)}
+.roam-cat.face-left svg{transform:scaleX(-1)}
+.roam-cat.crouch svg{transform:scaleY(.86)}
+.roam-cat.crouch.face-left svg{transform:scaleX(-1) scaleY(.86)}
+.roam-cat.land svg{transform:scale(1.08,.88)}
+.roam-cat.land.face-left svg{transform:scale(-1.08,.88)}
+.roam-cat.held svg{transform:rotate(-6deg)}
+.roam-cat.held.face-left svg{transform:scaleX(-1) rotate(-6deg)}
+.roam-cat.arriving{opacity:.4}
+
+/* Thought bubble: rounded cloud with trailing thought dots, kept inside the viewport by JS. */
+.roam-thought{position:absolute;bottom:calc(22px*var(--cat-scale) + 14px);left:0;width:max-content;max-width:min(250px,calc(100vw - 24px));padding:10px 14px;background:#fffbea;color:#3a3122;border:3px solid #2a1d15;border-radius:16px;box-shadow:4px 4px 0 #2a1d1526;font:600 .84rem/1.6 var(--sans,"Segoe UI",Arial,sans-serif);pointer-events:none;animation:thought-in .22s steps(3,end) both;--tail:50%}
+.roam-thought p{margin:0}
+.roam-thought:before,.roam-thought:after{content:"";position:absolute;background:#fffbea;border:3px solid #2a1d15;border-radius:50%}
+.roam-thought:before{width:12px;height:12px;bottom:-14px;left:calc(var(--tail) - 12px)}
+.roam-thought:after{width:7px;height:7px;bottom:-24px;left:calc(var(--tail) - 4px)}
+@keyframes thought-in{from{opacity:0;transform:translateY(6px) scale(.9)}to{opacity:1;transform:none}}
+
+.roam-fx{position:absolute;left:50%;bottom:calc(18px*var(--cat-scale));width:0;height:0}
+.roam-heart{position:absolute;left:var(--dx);bottom:0;width:15px;height:12px;background:#d4574e;clip-path:polygon(0 25%,20% 0,40% 0,50% 17%,60% 0,80% 0,100% 25%,100% 50%,50% 100%,0 50%);animation:cat-float 1.5s steps(10,end) both}
+.roam-zzz{position:absolute;left:calc(var(--dx) + 20px);bottom:0;font:800 1rem/1 ui-monospace,Consolas,monospace;color:#6a7f9b;animation:cat-float 1.6s steps(8,end) both}
+@keyframes cat-float{0%{opacity:0;transform:translateY(0)}20%{opacity:1}100%{opacity:0;transform:translateY(-46px)}}
+@media(forced-colors:active){.roam-thought{border-color:CanvasText}}
+@media print{.roam-cat{display:none}}
+.roam-thought.side{bottom:calc(10px*var(--cat-scale))}
+.roam-thought.side:before{bottom:8px;left:var(--tail)}
+.roam-thought.side:after{display:none}

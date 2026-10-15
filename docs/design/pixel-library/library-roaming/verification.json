@@ -1,0 +1,146 @@
+{
+  "date": "2026-10-15T16:54:37.355Z",
+  "results": [
+    {
+      "name": "cat moves over time on the library",
+      "ok": true,
+      "detail": "[[677,781,\"sit\",\"bookcase\"],[694,781,\"walk\",\"bookcase\"],[713,781,\"sit\",\"bookcase\"],[713,781,\"sit\",\"bookcase\"],[713,781,\"sit\",\"bookcase\"],[713,781,\"yawn\",\"bookcase\"]]"
+    },
+    {
+      "name": "cat never covers controls while perched",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "petting makes the cat happy and think",
+      "ok": true,
+      "detail": "פררר…"
+    },
+    {
+      "name": "spine opens book detail",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "delete asks for permanent confirmation (no undo)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cat pauses while a dialog is open",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cat resumes after dialog closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cat follows the scroll into view",
+      "ok": true,
+      "detail": "{\"y\":780.859375,\"anchor\":\"bookcase\"}"
+    },
+    {
+      "name": "dragging picks the cat up",
+      "ok": true,
+      "detail": "הי! אני לא קובץ לגרירה!"
+    },
+    {
+      "name": "dropped cat lands on a perch",
+      "ok": true,
+      "detail": "{\"anchor\":\"bookcase\",\"pose\":\"sit\"}"
+    },
+    {
+      "name": "Auto: English target disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Auto: checked/thorough disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "translate disabled without a file",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sample enables translate in Auto",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "own model requires budget and key",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "budget + key enable translate",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "own model asks for provider consent",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "job page renders with bindery",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pause freezes the bindery",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "job finishes into result",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decision scenario shows the decision box",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "gloss opens",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "English switches direction",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no horizontal overflow at 390",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "name": "no horizontal overflow on new at 390",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile cat clear of controls",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cat pauses on hidden tab",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no page errors",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "errors": []
+}
