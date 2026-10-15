@@ -67,8 +67,9 @@ try {
   if (want('sprites')) {
     await viewport(1200, 1000); await load();
     await js(`(() => { const sheet = document.createElement('div'); sheet.id='sheet'; sheet.style.cssText='position:fixed;inset:0;z-index:999;background:#f3ead3;display:flex;flex-wrap:wrap;gap:14px;padding:14px;align-content:flex-start';
-      document.querySelectorAll('.roam-body g[data-f]').forEach(g => { const box=document.createElement('figure'); box.style.cssText='margin:0;font:12px monospace;text-align:center';
-        box.innerHTML='<svg viewBox="0 0 32 22" width="256" height="176" shape-rendering="crispEdges" style="background:#e6dcc0">'+g.innerHTML+'</svg><figcaption>'+g.dataset.f+'</figcaption>'; sheet.append(box); });
+      const src = document.querySelector('.cat-svg');
+      ['sit', 'look', 'happy', 'yawn', 'groom', 'walk', 'jump', 'held', 'loaf'].forEach(pose => { const box = document.createElement('figure'); box.style.cssText = 'margin:0;font:12px monospace;text-align:center;background:#efe5d1;padding:8px;border-radius:8px';
+        const svg = src.cloneNode(true); svg.dataset.pose = pose; svg.style.cssText = 'width:240px;height:180px;display:block'; box.append(svg); const cap = document.createElement('figcaption'); cap.textContent = pose; box.append(cap); sheet.append(box); });
       document.body.append(sheet); })()`);
     await sleep(200); await shot('sprites');
   }
@@ -167,6 +168,24 @@ try {
       writeFileSync(join(out, `bindery-${Math.round(f * 100)}.png`), Buffer.from(r.data, 'base64'));
     }
     check('bindery has two turning leaves', (await js(`document.querySelectorAll('.bindery .leaf').length`)) === 2);
+  }
+  if (want('shelf')) {
+    await viewport(1440, 900); await load(); await sleep(1200);
+    await js(`(() => { const s = window.libraryApp.state; s.demo.library = 'big'; document.querySelector('[data-act=demo]').click(); })()`); await sleep(200);
+    await js(`(() => { const r = document.querySelector('input[name=demo-library][value=big]'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); document.getElementById('modal').close(); })()`); await sleep(600);
+    const first = await js(`document.querySelectorAll('.spine').length`);
+    check('large library opens a few shelves, not all 120', first > 0 && first < 120 && await js(`!!document.querySelector('.shelf-more')`), String(first));
+    await js(`document.querySelector('[data-act=more-shelves]').click()`); await sleep(300);
+    check('“more shelves” adds books', (await js(`document.querySelectorAll('.spine').length`)) > first);
+    await js(`document.querySelector('.bookcase').scrollIntoView({block:'start'}); window.scrollBy(0, -60)`); await sleep(400);
+    const sp = await js(`(() => { const r = document.querySelectorAll('.spine')[6].getBoundingClientRect(); return {x:r.left + r.width/2, y:r.top + r.height/2}; })()`);
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: sp.x, y: sp.y }); await sleep(900);
+    check('hovered book turns to show its cover', await js(`getComputedStyle(document.querySelectorAll('.spine')[6].querySelector('.book3d')).transform !== getComputedStyle(document.querySelectorAll('.spine')[1].querySelector('.book3d')).transform`));
+    await shot('shelf-hover');
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 5, y: 5 });
+    await js(`document.querySelector('[data-view=list]').click()`); await sleep(400);
+    check('list view shows every book', (await js(`document.querySelectorAll('.list-book').length`)) >= 120);
+    await shot('library-list');
   }
   if (want('decision')) {
     await viewport(1440, 900); await load('#new'); await sleep(800);

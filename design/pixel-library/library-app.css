@@ -391,6 +391,22 @@ progress::-moz-progress-bar{border-radius:999px;background:var(--green-700)}
 @keyframes glass{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-14px,-10px) rotate(-8deg)}}
 @keyframes stamper{0%,100%{transform:translateY(-14px)}45%,60%{transform:translateY(0)}}
 @keyframes flame{0%,100%{transform:scale(1,1)}50%{transform:scale(.88,1.08) translateY(-1px)}}
+/* Letters in the air: each one rises out of a page, flashes, and lands in the other script. */
+.bd-letters{position:absolute;left:50%;top:150px;width:0;height:0;pointer-events:none;z-index:3}
+.fl{position:absolute;left:var(--x);top:var(--y);opacity:0;font:600 24px/1 var(--display);color:#ffeab8;text-shadow:0 0 8px #ffcf6b,0 0 22px #ffb84d99}
+.fl b{position:absolute;left:0;top:0;font-weight:600;transform:translate(-50%,-50%)}
+.fl .to{opacity:0}
+.fl:after{content:"";position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:radial-gradient(circle,#fff8dc,#ffd27a66 35%,transparent 70%);opacity:0}
+.bindery[data-step=translating] .fl,.bindery[data-step=reviewing] .fl{animation:fl-rise var(--dur) cubic-bezier(.35,.1,.4,1) infinite var(--d)}
+.bindery[data-step=translating] .fl .from,.bindery[data-step=reviewing] .fl .from{animation:fl-from var(--dur) ease-in-out infinite var(--d)}
+.bindery[data-step=translating] .fl .to,.bindery[data-step=reviewing] .fl .to{animation:fl-to var(--dur) ease-in-out infinite var(--d)}
+.bindery[data-step=translating] .fl:after,.bindery[data-step=reviewing] .fl:after{animation:fl-spark var(--dur) ease-out infinite var(--d)}
+.bindery[data-step=reviewing] .fl{color:#d9f0dc;text-shadow:0 0 8px #8fd17a,0 0 20px #5fae6c88}
+@keyframes fl-rise{0%{opacity:0;transform:translate(0,0) scale(.55)}14%{opacity:1}78%{opacity:1}100%{opacity:0;transform:translate(var(--dx),calc(var(--rise) * -1)) scale(1.2) rotate(-6deg)}}
+@keyframes fl-from{0%,36%{opacity:1;filter:blur(0);transform:translate(-50%,-50%) scale(1)}52%,100%{opacity:0;filter:blur(5px);transform:translate(-50%,-50%) scale(1.5)}}
+@keyframes fl-to{0%,40%{opacity:0;filter:blur(5px);transform:translate(-50%,-50%) scale(.5)}58%,100%{opacity:1;filter:blur(0);transform:translate(-50%,-50%) scale(1)}}
+@keyframes fl-spark{0%,38%{opacity:0;transform:scale(.4)}48%{opacity:1;transform:scale(1.5)}62%,100%{opacity:0;transform:scale(2)}}
+@media(max-width:640px){.bd-letters{top:140px;transform:scale(.72)}}
 .bindery[data-running=false] *,.bindery[data-running=false] *:before,.bindery[data-running=false] *:after{animation-play-state:paused!important}
 
 /* Result */
@@ -549,3 +565,50 @@ dialog[open]{animation:dialog-in .22s cubic-bezier(.2,.8,.3,1)}
 }
 @media(forced-colors:active){.spine,.btn,.seg-opt span{border:2px solid ButtonText}}
 @media print{.site-header,.site-footer,.hero-art{display:none}}
+
+/* Books as 3D objects: the spine faces out; on hover or focus the book slides forward and turns to show its cover. */
+.shelf-books{perspective:1700px}
+.spine{background:none!important;box-shadow:none!important;padding:0;border-radius:0;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.2,.7,.3,1)}
+.spine .book3d{position:absolute;inset:0;transform-style:preserve-3d;transform:translateZ(calc(var(--cw) / -2));transition:transform .55s cubic-bezier(.2,.7,.25,1)}
+.face-spine,.face-cover,.face-top{position:absolute;backface-visibility:hidden}
+.face-spine{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:12px 0 9px;border-radius:3px 3px 1px 1px;color:#f8eed6;transform:translateZ(calc(var(--cw) / 2));
+  background:linear-gradient(90deg,#0000003a,#ffffff1f 22%,#ffffff08 45%,#00000026 85%,#00000047),var(--c);box-shadow:0 0 0 1px #0000004d,0 6px 10px -6px #000}
+.face-cover{top:0;height:100%;width:var(--cw);left:calc((var(--w) - var(--cw)) / 2);transform:rotateY(-90deg) translateZ(calc(var(--w) / 2));border-radius:2px 8px 8px 2px;color:#f8eed6;overflow:hidden;
+  background:linear-gradient(90deg,#00000059 0 6%,#ffffff24 8%,transparent 14%),radial-gradient(120% 80% at 70% 15%,#ffffff22,transparent 60%),var(--c);box-shadow:0 0 0 1px #0000004d}
+.face-top{left:0;top:0;width:var(--w);height:var(--cw);transform-origin:top;transform:translateZ(calc(var(--cw) / -2)) rotateX(90deg);background:repeating-linear-gradient(90deg,#efe3c6 0 2px,#d9c9a3 2px 3px)}
+.cover-frame{position:absolute;inset:8px 7px 8px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 6px;border:1px solid #e8c98a99;border-radius:3px;text-align:center}
+.cover-kind{font:800 .52rem/1 var(--sans);letter-spacing:.1em;padding:3px 6px;border-radius:999px;background:#00000040}
+.cover-name{font:600 .82rem/1.25 var(--display);overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 0 #0006}
+.cover-meta,.cover-date{font:600 .6rem/1.3 var(--sans);opacity:.9}
+.cover-progress{width:80%;height:5px;border-radius:999px;background:#00000040;overflow:hidden}
+.cover-progress i{display:block;height:100%;background:var(--gold-300)}
+.cover-flag{font:800 .56rem/1.2 var(--sans);padding:3px 6px;border-radius:999px;background:#f0a34a;color:var(--ink)}
+.spine:hover,.spine:focus-visible{z-index:6}
+.spine.is-selected{transform:translateY(-18px)}
+.spine.is-selected .face-spine{box-shadow:0 0 0 2px var(--gold-300),0 16px 20px -10px #000}
+@media(hover:hover){
+  .spine:hover{transform:translateY(-10px)}
+  .spine:hover .book3d{transform:translateZ(40px) rotateY(90deg);transition-delay:.08s}
+}
+.spine:focus-visible{outline:none;transform:translateY(-10px)}
+.spine:focus-visible .book3d{transform:translateZ(40px) rotateY(90deg)}
+.spine:focus-visible .face-cover{box-shadow:0 0 0 3px var(--gold-300)}
+.spine:hover .face-cover,.spine:focus-visible .face-cover{box-shadow:0 0 0 1px #0000004d,0 20px 30px -12px #000}
+.spine .spine-ribbon{bottom:-16px}
+/* Many books: a few shelves at a time, or a dense list. */
+.shelf-more{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 16px;padding:6px 0 20px;color:#e6dcc2;font-size:.9rem}
+.view-toggle{display:flex;gap:2px;padding:4px;border-radius:999px;background:var(--surface-3);border:1px solid var(--border)}
+.view-toggle button{min-height:36px;padding:6px 14px;border:0;border-radius:999px;background:transparent;font-weight:650;font-size:.86rem;color:var(--ink-2)}
+.view-toggle button[aria-pressed=true]{background:var(--surface);color:var(--green-900);box-shadow:var(--sh-1),0 0 0 1px var(--border)}
+.sort select{width:auto;min-width:160px;border-radius:999px}
+.bookcase.as-list{background:var(--surface);box-shadow:var(--sh-2);border:1px solid var(--border);padding:8px}
+.bookcase.as-list:before{display:none}
+.book-list{list-style:none;margin:0;padding:0;display:grid;max-height:560px;overflow:auto}
+.list-book{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;min-height:52px;padding:8px 12px;border:0;border-radius:var(--r-sm);background:transparent;text-align:start}
+.list-book:hover{background:var(--surface-2)}
+.list-book.is-selected{background:var(--green-50);box-shadow:inset 0 0 0 1px var(--green-600)}
+.list-swatch{width:10px;height:34px;border-radius:2px;background:linear-gradient(90deg,#0003,#fff2 40%,#0002),var(--c)}
+.list-name{font:600 1rem/1.3 var(--display);color:var(--green-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list-meta{font-size:.82rem;color:var(--muted);white-space:nowrap}
+.book-list li+li{border-top:1px solid var(--border)}
+@media(max-width:640px){.list-book{grid-template-columns:auto minmax(0,1fr)}.list-meta{grid-column:2;white-space:normal}.sort select{min-width:0}}

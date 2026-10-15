@@ -14,7 +14,7 @@
     account: 'signedOut', update: 'available', autoUpdate: true, accountMenu: false,
     demo: { next: 'smooth', library: 'sample', speed: 1 },
     prefs: { cat: 'roam', sound: false, art: true, soundError: false },
-    libTab: 'done', search: '', selected: null,
+    libTab: 'done', search: '', selected: null, libView: 'shelf', libSort: 'recent', shelfLimit: 3,
     form: {
       file: null, fileError: '', optionsOpen: false, profile: 'scholarly', model: 'auto',
       roles: { translator: 'gpt-6-luna', semantic_reviewer: 'follow', chapter_qa: 'follow' },
@@ -60,7 +60,18 @@
       error: ['החיבור לספק נקטע. אפשר להמשיך מאותה נקודה; שום מקטע שהושלם לא יישלח שוב.', 'The provider connection dropped. You can continue from the same point; no finished segment is sent again.'] }
   ];
   const books = { done: [], drive: [], progress: [] };
+  function bigLibrary() {
+    const a = ['Notes on', 'Letters from', 'A History of', 'Essays on', 'The Garden of', 'Fragments of', 'Lectures on', 'Journeys through', 'Studies in', 'Le livre de', 'Der Weg zum', 'Cuentos de'];
+    const b = ['Memory', 'Light', 'the Sea', 'Silence', 'Rome', 'Time', 'Paper', 'the North', 'Ethics', 'Translation', 'Cats', 'Winter', 'Maps', 'Gardens', 'Clocks'];
+    return Array.from({ length: 120 }, (_, i) => {
+      const kind = i % 3 ? 'pdf' : 'epub', day = 1 + (i * 7) % 28, month = 1 + (i * 5) % 10;
+      return { id: 'big-' + i, file: `${a[i % a.length]} ${b[(i * 7) % b.length]}${i % 4 ? '' : ', vol. ' + (1 + i % 5)}.${kind}`, kind,
+        date: `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.2026`, units: 40 + (i * 37) % 560,
+        drive: i % 4 ? 'synced' : 'local', color: COLORS[(i * 3) % COLORS.length], h: 120 + (i * 17) % 50, w: 26 + (i * 11) % 28 };
+    });
+  }
   function resetBooks() {
+    if (S.demo.library === 'big') { books.done = bigLibrary(); books.drive = SAMPLE_DRIVE.map(b => ({ ...b })); books.progress = SAMPLE_PROGRESS.map(b => ({ ...b })); return; }
     const empty = S.demo.library === 'empty';
     books.done = empty ? [] : SAMPLE_DONE.map(b => ({ ...b }));
     books.drive = empty ? [] : SAMPLE_DRIVE.map(b => ({ ...b }));
@@ -308,7 +319,12 @@
   function visibleBooks() {
     const q = S.search.trim().toLocaleLowerCase();
     const list = S.libTab === 'done' ? [...books.done, ...(S.account !== 'signedOut' ? books.drive : [])] : progressBooks();
-    return list.filter(b => b.file.toLocaleLowerCase().includes(q));
+    const dateKey = d => d.split('.').reverse().join('');
+    const sorted = list.filter(b => b.file.toLocaleLowerCase().includes(q));
+    if (S.libSort === 'name') sorted.sort((x, y) => x.file.localeCompare(y.file, S.lang));
+    else if (S.libSort === 'size') sorted.sort((x, y) => (y.units || y.total || 0) - (x.units || x.total || 0));
+    else sorted.sort((x, y) => dateKey(y.date).localeCompare(dateKey(x.date)));
+    return sorted;
   }
   function libraryPage() {
     const progress = progressBooks(), blocked = progress.filter(b => b.blocker).length;
@@ -325,9 +341,11 @@
           <div class="shelf-tools"><div class="tabs" role="tablist" aria-label="${t('סוג המסמכים בספרייה', 'Library document type')}">
             <button type="button" role="tab" id="tab-done" data-tab="done" aria-selected="${S.libTab === 'done'}" tabindex="${S.libTab === 'done' ? 0 : -1}">${t('מוכנים', 'Ready')} <span class="count">${doneCount}</span></button>
             <button type="button" role="tab" id="tab-progress" data-tab="progress" aria-selected="${S.libTab === 'progress'}" tabindex="${S.libTab === 'progress' ? 0 : -1}">${t('בתהליך עבודה', 'In progress')} <span class="count">${progress.length}</span>${blocked ? '<i class="tab-flag" aria-hidden="true">!</i>' : ''}</button></div>
+            <div class="view-toggle" role="group" aria-label="${t('תצוגת הספרייה', 'Library view')}"><button type="button" data-view="shelf" aria-pressed="${S.libView === 'shelf'}">${t('מדף', 'Shelf')}</button><button type="button" data-view="list" aria-pressed="${S.libView === 'list'}">${t('רשימה', 'List')}</button></div>
+            <label class="sort"><span class="sr-only">${t('מיון', 'Sort')}</span><select id="lib-sort">${[['recent', t('האחרונים קודם', 'Most recent')], ['name', t('לפי שם', 'By name')], ['size', t('הגדולים קודם', 'Largest first')]].map(([v, l]) => `<option value="${v}" ${S.libSort === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
             <label class="search"><span class="sr-only">${t('חיפוש בספרייה', 'Search the library')}</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15 15 5 5" stroke="currentColor" stroke-width="2"/></svg><input id="search" type="search" placeholder="${t('חיפוש לפי שם קובץ', 'Search by file name')}" value="${esc(S.search)}" autocomplete="off"></label></div></div>
         ${S.account === 'error' ? `<p class="notice warn" role="alert">${t('הסנכרון עם Google Drive נכשל. הספרים במחשב זמינים כרגיל; ננסה שוב בעוד דקה.', 'Google Drive sync failed. Books on this computer work as usual; we will retry in a minute.')}</p>` : ''}
-        <div id="bookcase" class="bookcase" data-perch="bookcase" role="tabpanel" aria-labelledby="tab-${S.libTab}"></div>
+        <div id="bookcase" class="bookcase${S.libView === 'list' ? ' as-list' : ''}" data-perch="bookcase" role="tabpanel" aria-labelledby="tab-${S.libTab}"></div>
         <p id="shelf-status" class="sr-only" role="status"></p>
         <div id="book-detail">${bookDetail()}</div>
       </section>`;
@@ -346,6 +364,11 @@
       if (S.search) cat('search-empty');
       return;
     }
+    if (S.libView === 'list') {
+      host.innerHTML = `<ul class="book-list">${list.map(listRow).join('')}</ul>`;
+      if (focused) host.querySelector(`[data-book="${CSS.escape(focused)}"]`)?.focus({ preventScroll: true });
+      return;
+    }
     const width = host.clientWidth - 36, rows = [[]];
     let used = 0;
     for (const b of list) {
@@ -354,7 +377,10 @@
       rows.at(-1).push(b); used += w;
     }
     host.dataset.rows = rows.length;
-    host.innerHTML = rows.map((row, i) => `<div class="shelf-row"><div class="shelf-books">${row.map(spine).join('')}${i === rows.length - 1 ? SHELF_DECO : ''}</div><div class="plank" data-perch="plank-${i}"></div></div>`).join('');
+    // Large libraries open a few shelves at a time; search, sort and the list view do the rest.
+    const shown = rows.slice(0, S.shelfLimit), shownCount = shown.flat().length;
+    host.innerHTML = shown.map((row, i) => `<div class="shelf-row"><div class="shelf-books">${row.map(spine).join('')}${i === rows.length - 1 ? SHELF_DECO : ''}</div><div class="plank" data-perch="plank-${i}"></div></div>`).join('')
+      + (rows.length > shown.length ? `<div class="shelf-more"><span>${t(`מוצגים ${shownCount} מתוך ${list.length} ספרים`, `Showing ${shownCount} of ${list.length} books`)}</span><button type="button" class="btn small gold" data-act="more-shelves">${t('עוד מדפים', 'More shelves')}</button><button type="button" class="link-btn light" data-view="list">${t('לתצוגת רשימה', 'Switch to list')}</button></div>` : '');
     if (focused) host.querySelector(`[data-book="${CSS.escape(focused)}"]`)?.focus({ preventScroll: true });
   }
   const SHELF_DECO = '<span class="shelf-deco" aria-hidden="true"><i class="deco-stack"><b></b><b></b><b></b></i><i class="deco-globe"></i><i class="deco-candle"></i><span class="cat-basket" data-perch="basket"><i></i></span><i class="deco-plant"></i></span>';
@@ -362,12 +388,27 @@
     const pct = b.total ? Math.round(100 * b.done / b.total) : 0;
     const status = b.status ? statusName(b.status) : t('מוכן', 'Ready');
     const drive = S.account !== 'signedOut' && b.drive;
+    const title = b.file.replace(/\.[^.]+$/, '');
     const label = `${b.file} · ${b.kind.toUpperCase()} · ${status}${b.status ? ` · ${pct}%` : ''}${b.blocker ? ' · ' + t('נדרשת החלטה', 'Decision required') : ''}${drive === 'cloud' ? ' · ' + t('ב־Drive בלבד', 'Drive only') : ''}`;
-    return `<button type="button" class="spine${S.selected === b.id ? ' is-selected' : ''}${drive === 'cloud' ? ' is-cloud' : ''}" data-book="${esc(b.id)}" aria-expanded="${S.selected === b.id}" aria-controls="book-detail" aria-label="${esc(label)}" style="--c:${b.color};--h:${b.h}px;--w:${b.w}px">
-      <span class="spine-band"></span><span class="spine-title" dir="auto">${esc(b.file.replace(/\.[^.]+$/, ''))}</span><span class="spine-kind">${b.kind.toUpperCase()}</span>
-      ${drive === 'synced' ? '<span class="spine-cloud" aria-hidden="true"></span>' : ''}
-      ${b.status ? `<span class="spine-ribbon" aria-hidden="true" style="--p:${pct}%"></span>` : ''}
-      ${b.blocker || b.error ? `<span class="spine-flag" aria-hidden="true">!</span>` : ''}</button>`;
+    const cover = Math.round(Math.min(132, b.h * .74));
+    const meta = b.status ? `${statusName(b.status)} · ${pct}%` : `${b.units} ${t('מקטעים', 'segments')}`;
+    // Hover or keyboard focus slides the book out and turns it to show the cover.
+    return `<button type="button" class="spine${S.selected === b.id ? ' is-selected' : ''}${drive === 'cloud' ? ' is-cloud' : ''}" data-book="${esc(b.id)}" aria-expanded="${S.selected === b.id}" aria-controls="book-detail" aria-label="${esc(label)}" style="--c:${b.color};--h:${b.h}px;--w:${b.w}px;--cw:${cover}px">
+      <span class="book3d" aria-hidden="true">
+        <span class="face-spine"><span class="spine-band"></span><span class="spine-title" dir="auto">${esc(title)}</span><span class="spine-kind">${b.kind.toUpperCase()}</span>
+          ${drive === 'synced' ? '<span class="spine-cloud"></span>' : ''}${b.status ? `<span class="spine-ribbon"></span>` : ''}${b.blocker || b.error ? `<span class="spine-flag">!</span>` : ''}</span>
+        <span class="face-cover"><span class="cover-frame"><span class="cover-kind">${b.kind.toUpperCase()}</span><span class="cover-name" dir="auto">${esc(title)}</span>
+          <span class="cover-meta">${esc(meta)}</span><span class="cover-date">${esc(b.date)}${drive === 'synced' ? ' · ☁' : drive === 'cloud' ? ' · ' + t('ב־Drive', 'in Drive') : ''}</span>
+          ${b.status ? `<span class="cover-progress"><i style="width:${pct}%"></i></span>` : ''}${b.blocker ? `<span class="cover-flag">${t('נדרשת החלטה', 'Decision needed')}</span>` : ''}</span></span>
+        <span class="face-top"></span>
+      </span></button>`;
+  }
+  function listRow(b) {
+    const pct = b.total ? Math.round(100 * b.done / b.total) : 0;
+    const drive = S.account !== 'signedOut' && b.drive;
+    return `<li><button type="button" class="list-book${S.selected === b.id ? ' is-selected' : ''}" data-book="${esc(b.id)}" aria-expanded="${S.selected === b.id}" aria-controls="book-detail" style="--c:${b.color}">
+      <span class="list-swatch" aria-hidden="true"></span><span class="list-name" dir="auto">${esc(b.file)}</span>
+      <span class="list-meta"><bdi>${b.kind.toUpperCase()}</bdi> · <bdi>${esc(b.date)}</bdi> · <bdi>${b.status ? `${statusName(b.status)} ${pct}%` : `${b.units} ${t('מקטעים', 'segments')}`}</bdi>${drive === 'synced' ? ' · ☁' : drive === 'cloud' ? ' · ' + t('ב־Drive בלבד', 'Drive only') : ''}${b.blocker ? ` · <b class="bad">${t('נדרשת החלטה', 'Decision required')}</b>` : ''}</span></button></li>`;
   }
   const statusName = s => ({ failed: t('נעצר', 'Stopped'), paused: t('מושהה', 'Paused'), interrupted: t('הופסק', 'Interrupted'), queued: t('ממתין', 'Queued'), reading: t('קורא', 'Reading'), translating: t('מתרגם כעת', 'Translating'), reviewing: t('בבדיקה', 'Reviewing'), rebuilding: t('בונה את הקובץ', 'Building the file'), completed: t('הושלם', 'Completed') }[s] || s);
   function findBook(id) { return [...books.done, ...books.drive, ...progressBooks()].find(b => b.id === id); }
@@ -526,6 +567,14 @@
     const step = j.status === 'paused' || j.status === 'interrupted' ? j.lastStage : j.status;
     const lines = (n, cls) => `<div class="lines ${cls}">${Array.from({ length: n }, (_, i) => `<i style="--w:${[92, 84, 96, 70, 88, 94, 62, 90, 80][i % 9]}%"></i>`).join('')}</div>`;
     const stamp = `<span class="page-stamp">${t('טיוטה', 'DRAFT')}</span>`;
+    // Letters rise out of the pages and change script mid-flight: mostly English into Hebrew, some back.
+    const pairs = [['A', 'א'], ['B', 'ב'], ['G', 'ג'], ['D', 'ד'], ['H', 'ה'], ['L', 'ל'], ['M', 'מ'], ['N', 'נ'], ['S', 'ס'], ['T', 'ת'], ['R', 'ר'], ['K', 'כ']];
+    const letters = Array.from({ length: 11 }, (_, i) => {
+      const [en, he] = pairs[(i * 5) % pairs.length], toHe = i % 3 !== 2;
+      const x = toHe ? 36 + (i * 37) % 130 : -(36 + (i * 53) % 130);
+      const dx = toHe ? -(24 + (i * 17) % 80) : 24 + (i * 23) % 80;
+      return `<span class="fl" style="--x:${x}px;--y:${(i * 29) % 60}px;--dx:${dx}px;--rise:${120 + (i * 13) % 70}px;--d:${-(i * .53).toFixed(2)}s;--dur:${(3.8 + (i % 4) * .45).toFixed(2)}s"><b class="from">${toHe ? en : he}</b><b class="to">${toHe ? he : en}</b></span>`;
+    }).join('');
     const leaf = d => `<div class="leaf" style="--delay:${d}"><div class="face front">${lines(8, 'src')}</div><div class="face back">${lines(8, 'tgt')}${stamp}</div></div>`;
     // Props stand beside the book, never in the leaf's path; stage marks are printed on the pages.
     return `<div class="bindery" data-step="${step}" data-running="${running}" aria-hidden="true">
@@ -539,6 +588,7 @@
         ${leaf('0s')}${leaf('calc(var(--turn) / -2)')}
         <div class="tome-gutter"></div>
       </div></div>
+      <div class="bd-letters">${letters}</div>
       <div class="bd-props"><div class="bd-glass"></div><div class="bd-stamper"><i></i></div><div class="bd-ink"></div>
         <div class="bd-quill"><svg viewBox="0 0 34 84"><path d="M30 2C14 14 6 36 9 62l3 8c2-22 9-44 18-68z" fill="#fffaf0" stroke="#cdbb92" stroke-width="1"/><path d="M30 2C20 22 14 44 11 70" fill="none" stroke="#9c7c4a" stroke-width="1.4"/><path d="M14 30l-5 2M16 22l-6 3M13 40l-5 1M12 50l-4 1" stroke="#e4d6b8" stroke-width="1"/><path d="M10 68l1 14 3-13z" fill="#2b1c10"/></svg></div>
         <div class="bd-candle"><i></i></div></div>
@@ -738,7 +788,7 @@
       ${group('demo-account', 'Google', [['signedOut', t('מנותק', 'Signed out')], ['signedIn', t('מחובר', 'Signed in')], ['syncing', t('מסנכרן', 'Syncing')], ['error', t('שגיאת סנכרון', 'Sync error')]], S.account)}
       ${group('demo-update', t('עדכון', 'Update'), [['none', t('אין', 'None')], ['available', t('זמין', 'Available')], ['ready', t('מוכן', 'Ready')]], S.update)}
       ${group('demo-next', t('העבודה הבאה', 'Next job'), [['smooth', t('חלקה', 'Smooth')], ['decision', t('תדרוש החלטה', 'Needs a decision')], ['error', t('תיעצר בשגיאה', 'Stops with an error')]], S.demo.next)}
-      ${group('demo-library', t('הספרייה', 'Library'), [['sample', t('ספרים לדוגמה', 'Sample books')], ['empty', t('ריקה', 'Empty')]], S.demo.library)}
+      ${group('demo-library', t('הספרייה', 'Library'), [['sample', t('ספרים לדוגמה', 'Sample books')], ['big', t('גדולה (120 ספרים)', 'Large (120 books)')], ['empty', t('ריקה', 'Empty')]], S.demo.library)}
       ${group('demo-speed', t('מהירות', 'Speed'), [['1', t('רגילה', 'Normal')], ['4', '×4']], String(S.demo.speed))}`,
       `<button type="button" class="btn" data-act="close-modal">${t('סגירה', 'Close')}</button>`, 'wide');
   }
@@ -914,15 +964,17 @@
 
   // ---------- Events ----------
   document.addEventListener('click', event => {
-    const target = event.target.closest('[data-go],[data-act],[data-tab],[data-book],[data-budget],[data-gloss],[data-focus]');
+    const target = event.target.closest('[data-go],[data-act],[data-tab],[data-view],[data-book],[data-budget],[data-gloss],[data-focus]');
     if (S.accountMenu && !event.target.closest('.account')) { S.accountMenu = false; document.querySelector('#account-menu')?.setAttribute('hidden', ''); document.querySelector('[data-act="account"]')?.setAttribute('aria-expanded', 'false'); }
     if (!target || target.disabled) return;
     if (target.dataset.go) { event.preventDefault(); go(target.dataset.go); return; }
-    if (target.dataset.tab) { S.libTab = target.dataset.tab; S.selected = null; render(); $(`tab-${S.libTab}`)?.focus(); return; }
+    if (target.dataset.tab) { S.libTab = target.dataset.tab; S.selected = null; S.shelfLimit = 3; render(); $(`tab-${S.libTab}`)?.focus(); return; }
+    if (target.dataset.view) { S.libView = target.dataset.view; S.shelfLimit = 3; render(); document.querySelector(`[data-view="${S.libView}"]`)?.focus(); return; }
     if (target.dataset.book) {
       S.selected = S.selected === target.dataset.book ? null : target.dataset.book;
       $('book-detail').innerHTML = bookDetail();
-      document.querySelectorAll('.spine').forEach(s => { const on = s.dataset.book === S.selected; s.classList.toggle('is-selected', on); s.setAttribute('aria-expanded', on); });
+      document.querySelectorAll('[data-book]').forEach(s => { const on = s.dataset.book === S.selected; s.classList.toggle('is-selected', on); s.setAttribute('aria-expanded', on); });
+      if (S.selected) document.getElementById('book-detail').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       window.libraryCat?.refresh();
       return;
     }
@@ -953,6 +1005,10 @@
       case 'sign-out': S.account = 'signedOut'; S.accountMenu = false; render(); break;
       case 'close-update': S.update = 'none'; render(); break;
       case 'sample': useSample(); break;
+      case 'more-shelves': {
+        S.shelfLimit += 3; const before = document.querySelectorAll('.spine').length; layoutShelf();
+        document.querySelectorAll('.spine')[before]?.focus({ preventScroll: true }); window.libraryCat?.refresh(); break;
+      }
       case 'clear-search': S.search = ''; render(); $('search')?.focus(); break;
       case 'close-detail': { const sel = S.selected; S.selected = null; $('book-detail').innerHTML = bookDetail(); document.querySelector(`[data-book="${CSS.escape(sel)}"]`)?.focus(); document.querySelectorAll('.spine').forEach(s => { s.classList.remove('is-selected'); s.setAttribute('aria-expanded', 'false'); }); break; }
       case 'download': download(id, target.dataset.format, !!target.dataset.partial); break;
@@ -1021,7 +1077,7 @@
   document.addEventListener('submit', event => { event.preventDefault(); submit(); });
   document.addEventListener('input', event => {
     const el = event.target;
-    if (el.id === 'search') { S.search = el.value; S.selected = null; layoutShelf(); $('book-detail').innerHTML = bookDetail(); window.libraryCat?.refresh(); }
+    if (el.id === 'search') { S.search = el.value; S.selected = null; S.shelfLimit = 3; layoutShelf(); $('book-detail').innerHTML = bookDetail(); window.libraryCat?.refresh(); }
     if (el.id === 'budget') {
       S.form.budget = el.value;
       const est = estimate(), b = budgetValue();
@@ -1073,6 +1129,7 @@
     if (el.name === 'quality') { f.quality = el.value; render(); }
     if (el.name === 'target') { f.target = el.value; render(); }
     if (el.id === 'source') f.source = el.value;
+    if (el.id === 'lib-sort') { S.libSort = el.value; S.shelfLimit = 3; layoutShelf(); window.libraryCat?.refresh(); }
     if (el.name === 'ocr') f.ocr = el.value;
     if (el.id === 'font-before') f.fontBefore = el.value;
     if (el.id === 'font-after') { S.fontAfter = el.value; toast(t('ה־PDF נבנה מחדש עם הגופן החדש. לא נשלחה קריאה למודל.', 'The PDF was rebuilt with the new font. No model call was sent.')); }
@@ -1095,7 +1152,7 @@
       if (k === 'account') S.account = v;
       if (k === 'update') { S.update = v; if (v === 'available') cat('update'); }
       if (k === 'next') S.demo.next = v;
-      if (k === 'library') { S.demo.library = v; resetBooks(); S.selected = null; }
+      if (k === 'library') { S.demo.library = v; resetBooks(); S.selected = null; S.shelfLimit = 3; }
       if (k === 'speed') S.demo.speed = Number(v);
       render();
     }

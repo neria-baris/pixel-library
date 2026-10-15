@@ -3,87 +3,46 @@
 (() => {
   'use strict';
 
-  // ---------- Sprite ----------
-  const PAL = { K: '#9a7b63', O: '#2a1d15', B: '#d68b45', D: '#a85f2a', L: '#f7e0b5', P: '#e8948c', E: '#3d6e34', W: '#fffbea' };
-  const GW = 32, GH = 22;
-  const HEAD = ['.O.......O.', 'OBO.....OBO', 'OPBOOOOOBPO', 'OBBDBDBDBBO', '', '', 'OBLLLPLLLBO', '.OLLOLOLLO.', '..OOOOOOO..'];
-  const EYES = {
-    open: ['OBWEBBBWEBO', 'OBEEBBBEEBO'],
-    side: ['OBBWEBBBWEO', 'OBBEEBBBEEO'],
-    closed: ['OBBBBBBBBBO', 'OBOOBBBOOBO'],
-    happy: ['OBBOBBBOBBO', 'OBOBOBOBOBO'],
-    wide: ['OBWWBBBWWBO', 'OBEEBBBEEBO']
-  };
-  const YAWN = ['OBLLOPOLLBO', '.OLOPPPOLO.'];
-  const head = (eyes = 'open', yawn = false) => {
-    const h = HEAD.slice();
-    [h[4], h[5]] = EYES[eyes];
-    if (yawn) [h[6], h[7]] = YAWN;
-    if (eyes === 'happy') h[6] = 'OPLLLPLLLPO';
-    return h;
-  };
-  const BODY = ['..OOOOOOOOOOOOOO..', '.OBBDBBBDBBBDBBBO.', 'OBBBDBBBDBBBDBBBBO', 'OBBBBBBBBBBBBBBBBO',
-    'OBBBBBBBBBBBBBBLLO', '.OLLLLLLLLLLLLLLO.', '..OOOOOOOOOOOOOO..'];
-  const SIT = ['..OOOOOOOOO..', '.OBBBLLLBBBO.', '.OBDBLLLBDBO.', 'OBBDBLLLBDBBO', 'OBBBBLLLBBBBO',
-    'OBDBBLLLBBDBO', 'OBBBBLLLBBBBO', 'OBBBOLLLOBBBO', 'OBBOLLOLLOBBO', '.OOOOOOOOOOO.'];
-  const LEG = ['OBO', 'OLO', 'OLO', 'OOO'], LEG_UP = ['OLO', 'OLO', 'OOO'];
-  const TAIL_A = ['..OOO..', '.OLLO..', '.ODO...', 'OBO....', 'ODO....', 'OBO....', '.ODO...', '.OBBO..', '..OBBO.'];
-  const TAIL_B = ['...OOO.', '..OLLO.', '..ODO..', '.OBO...', 'ODO....', 'OBO....', '.ODO...', '.OBBO..', '..OBBO.'];
-  const TAIL_FLAT = ['.OOOO', 'OLDBD', '.OOOO'];
-  const TAIL_DOWN = ['OBO', 'ODO', 'OBO', 'ODO', 'OLO', '.O.'];
-  const SIT_TAIL_A = ['....OO', '...OLO', '...ODO', 'OOOOBO', 'BBDBDO', 'OOOOO.'];
-  const SIT_TAIL_B = ['......', '....OO', '...OLO', 'OOOODO', 'BBDBBO', 'OOOOO.'];
-  const WHISKERS = [['KK...........KK', '..K.........K..'], 9, 10];
-  const PAW = ['OLO', 'OBO', 'OBO'];
-
-  function compose(parts) {
-    const grid = Array.from({ length: GH }, () => Array(GW).fill(null));
-    for (const [rows, x, y] of parts) rows.forEach((row, r) => [...row].forEach((c, i) => {
-      const gx = x + i, gy = y + r;
-      if (c !== '.' && gx >= 0 && gx < GW && gy >= 0 && gy < GH) grid[gy][gx] = c;
-    }));
-    const paths = {};
-    grid.forEach((row, y) => {
-      let x = 0;
-      while (x < GW) {
-        const c = row[x];
-        if (!c) { x++; continue; }
-        let w = 1;
-        while (row[x + w] === c) w++;
-        (paths[c] ||= []).push(`M${x} ${y}h${w}v1h-${w}z`);
-        x += w;
-      }
-    });
-    return Object.entries(paths).map(([c, d]) => `<path fill="${PAL[c]}" d="${d.join('')}"/>`).join('');
-  }
-  const legs = (xs, lifted = []) => xs.map(x => [lifted.includes(x) ? LEG_UP : LEG, x, 18]);
-  const GROUND = [6, 10, 14, 18], STEP = [7, 9, 15, 17];
-  const walker = (tail, legParts, eyes = 'side') => [[tail, 0, 3], [BODY, 4, 11], ...legParts, [head(eyes), 20, 5]];
-  const sitter = (tail, eyes = 'open', extra = [], yawn = false) => [[tail, 21, 16], [SIT, 10, 12], WHISKERS, [head(eyes, yawn), 11, 4], ...extra];
-  const FRAMES = {
-    walk0: walker(TAIL_A, legs(GROUND)),
-    walk1: walker(TAIL_A, legs(STEP, [9, 17])),
-    walk2: walker(TAIL_B, legs(GROUND)),
-    walk3: walker(TAIL_B, legs(STEP, [7, 15])),
-    sitA: sitter(SIT_TAIL_A), sitB: sitter(SIT_TAIL_B),
-    blink: sitter(SIT_TAIL_A, 'closed'), look: sitter(SIT_TAIL_B, 'side'),
-    happy: sitter(SIT_TAIL_A, 'happy'), yawn: sitter(SIT_TAIL_B, 'closed', [], true),
-    groomA: sitter(SIT_TAIL_A, 'closed', [[PAW, 17, 10]]), groomB: sitter(SIT_TAIL_A, 'closed', [[PAW, 17, 11]]),
-    loafA: [[TAIL_FLAT, 0, 18], [BODY, 4, 15], [head('closed'), 19, 12]],
-    loafB: [[TAIL_FLAT, 0, 18], [BODY, 4, 15], [head('closed'), 19, 13]],
-    jump: [[TAIL_FLAT, 0, 11], [BODY, 4, 10],
-      [['OBO'], 18, 17], [['OBO'], 19, 18], [['OLO'], 20, 19], [['OOO'], 20, 20],
-      [['OBO'], 15, 17], [['OBO'], 16, 18], [['OLO'], 17, 19], [['OOO'], 17, 20],
-      [['OBO'], 6, 17], [['OBO'], 5, 18], [['OLO'], 4, 19], [['OOO'], 4, 20],
-      [['OBO'], 9, 17], [['OBO'], 8, 18], [['OLO'], 7, 19], [['OOO'], 7, 20], [head('wide'), 20, 4]],
-    held: [[TAIL_DOWN, 2, 12], [BODY, 4, 10], ...GROUND.map(x => [LEG, x, 17]), [head('wide'), 20, 3]]
-  };
-  const POSES = {
-    walk: [['walk0', 130], ['walk1', 130], ['walk2', 130], ['walk3', 130]],
-    sit: [['sitA', 650], ['sitB', 650]], look: [['look', 1000]], happy: [['happy', 1000]],
-    yawn: [['yawn', 1000]], groom: [['groomA', 240], ['groomB', 240]],
-    loaf: [['loafA', 1100], ['loafB', 1100]], jump: [['jump', 1000]], held: [['held', 1000]]
-  };
+  // ---------- The cat: an illustrated puppet ----------
+  // One SVG, two bodies (standing and sitting) and a shared head. Poses are CSS on data-pose,
+  // so the walk cycle and pose changes move limbs smoothly instead of swapping frames.
+  const GW = 32, GH = 24;
+  const leg = (cls, x) => `<g class="c-leg ${cls}"><rect x="${x}" y="58" width="9.5" height="30" rx="4.75"/><ellipse class="paw" cx="${x + 4.75}" cy="86.4" rx="5.4" ry="2.8"/></g>`;
+  const tail = (cls, d, tip) => `<g class="${cls}"><path class="t-out" d="${d}"/><path class="t-in" d="${d}"/><path class="t-stripe" d="${d}"/><path class="t-tip" d="${tip}"/></g>`;
+  const CAT_SVG = `<svg class="cat-svg" viewBox="0 0 120 90" data-pose="sit" aria-hidden="true" focusable="false">
+    <ellipse class="c-shadow" cx="60" cy="88.5" rx="36" ry="3.2"/>
+    <g class="c-stand">
+      ${tail('c-tail', 'M31 51 C17 50 9 37 15 22', 'M16.5 27 C15 25.5 14.7 23.5 15 22')}
+      ${leg('far back', 38)}${leg('far front', 78)}
+      <path class="c-fur" d="M26 54 C26 42 38 37.5 52 37.5 L72 37.5 C86 37.5 93 46 93 56 C93 66 85 70.5 72 70.5 L44 70.5 C32 70.5 26 64.5 26 54 Z"/>
+      <path class="c-cream" d="M40 66.5 C50 71 70 71 82 66 C78 61.5 46 61.5 40 66.5 Z"/>
+      <path class="c-stripes" d="M47 38.5 q3.5 6 0 11 M57 37.8 q3.5 7 0 12 M67 38.2 q3.5 6 0 10.5"/>
+      ${leg('near back', 30)}${leg('near front', 70)}
+    </g>
+    <g class="c-sit">
+      ${tail('c-tail-sit', 'M37 85.5 C52 92 78 90.5 95 83.5', 'M91.5 84.6 C93 84.1 94 83.8 95 83.5')}
+      <path class="c-fur" d="M30 86.5 C19 85 19 68 28 58 C36 47 50 40 64 38 C79 36 87 48 86 62 L85 86.5 Z"/>
+      <ellipse class="c-fur c-haunch" cx="41" cy="74" rx="16.5" ry="13"/>
+      <path class="c-stripes" d="M33 66 q6 2.5 10.5 -2 M31 74.5 q6 2.5 10.5 -2"/>
+      ${leg('sit far', 65)}${leg('sit near', 74.5)}
+      <ellipse class="c-cream c-chest" cx="77" cy="58" rx="8.5" ry="14"/>
+      <ellipse class="paw" cx="37" cy="86.4" rx="7.5" ry="3"/>
+    </g>
+    <g class="c-head">
+      <path class="c-fur" d="M81.5 30 L83 10.5 L96.5 21 Z"/><path class="c-ear-in" d="M85 25.5 L86 15.5 L93 21.5 Z"/>
+      <path class="c-fur" d="M98.5 20.5 L112.5 9.5 L113.5 29.5 Z"/><path class="c-ear-in" d="M102 21 L110 14.5 L110.5 26 Z"/>
+      <ellipse class="c-fur" cx="97" cy="34" rx="19.5" ry="16.8"/>
+      <path class="c-stripes" d="M92 19.5 v5 M97 18.3 v6.2 M102 19.5 v5"/>
+      <ellipse class="c-cream c-muzzle" cx="98" cy="41.2" rx="9.2" ry="6.2"/>
+      <g class="eyes-open"><ellipse cx="90" cy="32" rx="3.4" ry="4.3"/><ellipse cx="104.5" cy="32" rx="3.4" ry="4.3"/><circle class="glint" cx="91.2" cy="30.4" r="1.25"/><circle class="glint" cx="105.7" cy="30.4" r="1.25"/></g>
+      <path class="eyes-closed" d="M86.6 33 q3.4 2.6 6.8 0 M101.1 33 q3.4 2.6 6.8 0"/>
+      <path class="eyes-happy" d="M86.6 34.2 q3.4 -4 6.8 0 M101.1 34.2 q3.4 -4 6.8 0"/>
+      <ellipse class="blush" cx="84.5" cy="39.5" rx="3.6" ry="2.1"/><ellipse class="blush" cx="111.5" cy="39.5" rx="3.6" ry="2.1"/>
+      <path class="c-nose" d="M95.3 37.6 h5.4 l-2.7 3.1 z"/>
+      <path class="c-mouth" d="M98 40.6 q-1.6 3 -4.2 2 M98 40.6 q1.6 3 4.2 2"/>
+      <ellipse class="c-yawn" cx="98" cy="44.2" rx="3.1" ry="3.7"/>
+      <path class="c-whisk" d="M88.5 40.2 L73.5 37.2 M88.5 42.4 L73.8 43.6 M107.5 40.2 L122.5 37.2 M107.5 42.4 L122.2 43.6"/>
+    </g></svg>`;
 
   // ---------- Words ----------
   const he = () => document.documentElement.lang !== 'en';
@@ -194,12 +153,10 @@
   root.className = 'roam-cat';
   root.hidden = true;
   root.innerHTML = `<div class="roam-thought" aria-hidden="true" hidden><p></p><i class="roam-dot"></i></div>
-    <button type="button" class="roam-body"><svg viewBox="0 0 ${GW} ${GH}" shape-rendering="crispEdges" aria-hidden="true" focusable="false">${
-      Object.entries(FRAMES).map(([name, parts]) => `<g data-f="${name}" style="display:none">${compose(parts)}</g>`).join('')}</svg></button>
+    <button type="button" class="roam-body">${CAT_SVG}</button>
     <span class="roam-fx" aria-hidden="true"></span>`;
   const body = root.querySelector('.roam-body'), svg = root.querySelector('svg');
   const bubble = root.querySelector('.roam-thought'), bubbleText = bubble.querySelector('p'), fx = root.querySelector('.roam-fx');
-  const frameNodes = Object.fromEntries([...svg.querySelectorAll('g[data-f]')].map(g => [g.dataset.f, g]));
 
   // ---------- Geometry ----------
   // Controls and readable text. The cat may sit beside words, never on them.
@@ -251,8 +208,8 @@
 
   // ---------- State ----------
   const cat = { x: -200, y: -200, face: 1, pose: 'sit', anchor: null, motion: null, airborne: false };
-  let mode = 'roam', paused = false, running = false, raf = 0, last = 0, poseStart = 0, shownFrame = '';
-  let nextBlink = 0, blinkUntil = 0, lastActivity = performance.now(), napping = false;
+  let mode = 'roam', paused = false, running = false, raf = 0, last = 0, poseStart = 0;
+  let nextBlink = 0, blinkUntil = 0, lastActivity = performance.now(), napping = false; // eslint-disable-line
   let token = null, pets = [], lostSince = 0, checkAt = 0, dragging = null, suppressClick = false;
 
   class Token {
@@ -277,18 +234,8 @@
     root.style.setProperty('--cat-scale', s);
     root.style.transform = `translate3d(${Math.round(cat.x)}px,${Math.round(cat.y - H())}px,0)`;
     root.classList.toggle('face-left', cat.face < 0);
-    let name;
-    if (cat.pose === 'sit' && now < blinkUntil) name = 'blink';
-    else {
-      const seq = POSES[cat.pose], total = seq.reduce((sum, [, d]) => sum + d, 0);
-      let t = (now - poseStart) % total;
-      name = seq.find(([, d]) => (t -= d) < 0)?.[0] || seq[0][0];
-    }
-    if (name !== shownFrame) {
-      if (frameNodes[shownFrame]) frameNodes[shownFrame].style.display = 'none';
-      frameNodes[name].style.display = '';
-      shownFrame = name;
-    }
+    if (svg.dataset.pose !== cat.pose) svg.dataset.pose = cat.pose;
+    svg.classList.toggle('blink', now < blinkUntil);
     if (!bubble.hidden) placeBubble();
   }
   function placeBubble() {
@@ -314,7 +261,7 @@
     if (paused) return;
     if (cat.motion) cat.motion(now, dt);
     else if (cat.anchor && !dragging) follow(now);
-    if (cat.pose === 'sit' && now > nextBlink) { blinkUntil = now + 160; nextBlink = now + rand(2500, 6000); }
+    if (['sit', 'look', 'walk'].includes(cat.pose) && now > nextBlink) { blinkUntil = now + 150; nextBlink = now + rand(2500, 6000); }
     render(now);
   }
   function follow(now) {
@@ -327,10 +274,10 @@
     cat.x += r.l - a.left; a.left = r.l;
     cat.y = r.t;
     if (now > checkAt) {
-      checkAt = now + 900;
+      checkAt = now + 450;
       if (placeFree(cat.x, cat.y)) lostSince = 0;
       else if (!lostSince) lostSince = now;
-      else if (now - lostSince > 1100) { lostSince = 0; relocate('blocked'); }
+      else if (now - lostSince > 500) { lostSince = 0; relocate('blocked'); }
     }
   }
 
@@ -638,6 +585,11 @@
     refresh() {
       body.setAttribute('aria-label', he() ? 'חתול הספרייה. לחיצה מלטפת, גרירה מרימה אותו' : 'The library cat. Click to pet, drag to pick up');
       reconcile();
+      // A re-render may have put a control under the cat: move at once, don't wait for the periodic check.
+      if (running && !paused && cat.anchor && !cat.motion && cat.anchor.el.isConnected) {
+        const r = docRect(cat.anchor.el); cat.y = r.t;
+        if (!placeFree(cat.x, cat.y)) relocate('blocked');
+      }
     },
     setMode(next) {
       mode = next;
