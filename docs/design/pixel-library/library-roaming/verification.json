@@ -1,10 +1,10 @@
 {
-  "date": "2026-10-15T17:04:49.318Z",
+  "date": "2026-10-15T17:29:48.341Z",
   "results": [
     {
       "name": "cat moves over time on the library",
       "ok": true,
-      "detail": "[[644,781,\"sit\",\"bookcase\"],[644,781,\"groom\",\"bookcase\"],[644,781,\"groom\",\"bookcase\"],[644,781,\"groom\",\"bookcase\"],[647,781,\"walk\",\"bookcase\"],[650,781,\"sit\",\"bookcase\"]]"
+      "detail": "[[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"],[672,805,\"sit\",\"bookcase\"]]"
     },
     {
       "name": "cat never covers controls while perched",
@@ -39,7 +39,7 @@
     {
       "name": "cat follows the scroll into view",
       "ok": true,
-      "detail": "{\"y\":780.859375,\"anchor\":\"bookcase\"}"
+      "detail": "{\"y\":686.375,\"anchor\":\"shelf-top\"}"
     },
     {
       "name": "dragging picks the cat up",
@@ -98,6 +98,11 @@
     },
     {
       "name": "job finishes into result",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bindery has two turning leaves",
       "ok": true,
       "detail": ""
     },

@@ -180,7 +180,7 @@
     r(46, 0, 1, 7, '#8a7a5a'); r(41, 7, 11, 3, '#c9a35e'); r(42, 10, 9, 1, '#f5d98b');
     s += '<polygon class="glow" points="42,11 51,11 70,64 23,64" fill="#f8de95" opacity=".12"/>';
     [[30, 30, 1], [55, 22, 2], [62, 44, 3], [36, 50, 1], [48, 38, 2]].forEach(([x, y, d]) => r(x, y, 1, 1, '#f5e3b0', `mote m${d}`));
-    return `<svg class="hero-scene" viewBox="0 0 160 80" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" aria-hidden="true" focusable="false">${s}</svg>`;
+    return `<svg class="hero-scene" viewBox="0 0 160 80" preserveAspectRatio="xMaxYMid slice" shape-rendering="crispEdges" aria-hidden="true" focusable="false">${s}</svg>`;
   }
   const DROP_ART = pixels([
     '....OOOOOOOOOO....', '....OPPPPPPPPO....', '....OPKKKKKKPO....', '....OPPPPPPPPO....', '..OOOPKKKKKPPOOO..',
@@ -320,7 +320,7 @@
           <div class="row hero-actions"><button type="button" class="btn gold" data-go="new">+ ${t('ספר חדש לתרגום', 'New book to translate')}</button><button type="button" class="btn ghost-light" data-act="sample">${t('נסו עם PDF דוגמה, ללא עלות', 'Try a sample PDF, free')}</button></div>
           <div class="hero-stats"><button type="button" data-tab="done">${doneCount} ${t('מוכנים', 'ready')}</button><button type="button" data-tab="progress">${progress.length} ${t('בעבודה', 'in progress')}</button>${blocked ? `<button type="button" class="stat-warn" data-tab="progress">${blocked} ${t('מחכה להחלטה', 'awaiting a decision')}</button>` : ''}</div>
         </div><div class="hero-art">${heroScene()}</div></section>
-      <section class="shelf-section" aria-labelledby="shelf-title">
+      <section class="shelf-section" data-perch="shelf-top" aria-labelledby="shelf-title">
         <div class="shelf-head"><div><h2 id="shelf-title">${t('התרגומים שלכם', 'Your translations')}</h2><p class="muted">${S.libTab === 'done' ? t('כל מה שתורגם ונשמר במחשב שלכם. בחרו ספר מהמדף כדי להוריד, לפתוח או ללמוד.', 'Everything translated and saved on your computer. Pick a book to download, open or learn from.') : t('עבודות שעוד לא הסתיימו. אפשר להמשיך, להחליט או להוריד חלקית.', 'Work that is not finished yet. Continue, decide, or download partially.')}</p></div>
           <div class="shelf-tools"><div class="tabs" role="tablist" aria-label="${t('סוג המסמכים בספרייה', 'Library document type')}">
             <button type="button" role="tab" id="tab-done" data-tab="done" aria-selected="${S.libTab === 'done'}" tabindex="${S.libTab === 'done' ? 0 : -1}">${t('מוכנים', 'Ready')} <span class="count">${doneCount}</span></button>
@@ -442,43 +442,46 @@
   }
   function optionsBody(est) {
     const f = S.form, auto = !own(), terms = parseTerms(S.terms[f.target]);
-    const sections = [];
-    sections.push(seg('profile', t('פרופיל תרגום', 'Translation profile'), [
-      { value: 'scholarly', label: t('אקדמי', 'Scholarly'), caption: t('מדויק; הערות ומינוח נשמרים', 'Precise; notes and terminology kept') },
-      { value: 'literary', label: t('ספרותי', 'Literary'), caption: t('זורם, נאמן לסגנון', 'Flowing, faithful to style') }], f.profile));
-    sections.push(`<div class="wide">${seg('model', t('מודל', 'Model'), [
-      { value: 'auto', label: 'Auto', caption: t('תצוגת ניסיון (מדומה), ללא עלות וללא תרגום אמיתי', 'Preview (simulated), no cost, no real translation') },
-      { value: 'configured', label: t('מודל משלי', 'My own model'), caption: t('מפתח API · תרגום אמיתי בתשלום לספק', 'API key · real translation, paid to the provider') }], f.model)}
-      ${own() ? `<div class="sub-panel">${rolesBlock('form')}<p class="hint">${t('המפתחות נשמרים בזיכרון השרת המקומי לאורך ההרצה; ״לזכור במחשב הזה״ שומר אותם מוצפנים במנהל האישורים של Windows. לא בקובצי הפרויקט ולא בדפדפן.', 'Keys stay in the local server memory for this run; “remember on this computer” stores them encrypted in Windows Credential Manager. Never in project files or the browser.')} <button type="button" class="link-btn" data-act="keys-guide">${t('איך משיגים מפתח?', 'How do I get a key?')} ↗</button></p></div>` : ''}</div>`);
-    sections.push(seg('quality', t('רמת בדיקה', 'Review level'), [
-      { value: 'fast', label: t('מהיר', 'Fast'), caption: t('ללא בדיקה נוספת', 'No extra review') },
-      { value: 'checked', label: t('נבדק', 'Checked'), caption: t('מקטעים בסיכון + פרקים', 'Risky segments + chapters'), disabled: auto },
-      { value: 'thorough', label: t('מעמיק', 'Thorough'), caption: t('כל מקטע + פרקים', 'Every segment + chapters'), disabled: auto }], f.quality,
-      { hint: auto ? t('נבדק ומעמיק דורשים מודל משלכם. Auto אינו שולח קריאות בדיקה.', 'Checked and Thorough need your own model. Auto sends no review calls.') : t('מהיר אינו שולח קריאות בדיקה נוספות. הבדיקות אינן אישור איכות; הטיוטה נשארת טיוטה.', 'Fast sends no extra review calls. Reviews are not a quality approval; the draft stays a draft.') }));
-    sections.push(seg('target', t('שפת היעד', 'Target language'), [
-      { value: 'he', label: t('עברית', 'Hebrew') }, { value: 'en', label: 'English', disabled: auto }], f.target,
-      { hint: auto ? t('תרגום לאנגלית זמין עם מודל משלכם. במצב Auto התצוגה היא לעברית.', 'Translating to English needs your own model. Auto previews in Hebrew.') : '' }));
-    sections.push(`<div class="field"><label for="source">${t('שפת המקור', 'Source language')}</label><select id="source">${[['auto', t('זיהוי אוטומטי', 'Detect automatically')], ['en', t('אנגלית', 'English')], ['fr', t('צרפתית', 'French')], ['ja', t('יפנית', 'Japanese')]].map(([v, l]) => `<option value="${v}" ${f.source === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>`);
+    const group = (title, body, cls = '') => `<section class="opt-group ${cls}"><h3 class="opt-title">${title}</h3><div class="opt-grid">${body}</div></section>`;
+    const how = seg('profile', t('פרופיל תרגום', 'Translation profile'), [
+        { value: 'scholarly', label: t('אקדמי', 'Scholarly'), caption: t('מדויק; הערות ומינוח נשמרים', 'Precise; notes and terminology kept') },
+        { value: 'literary', label: t('ספרותי', 'Literary'), caption: t('זורם, נאמן לסגנון', 'Flowing, faithful to style') }], f.profile)
+      + seg('target', t('שפת היעד', 'Target language'), [
+        { value: 'he', label: t('עברית', 'Hebrew') }, { value: 'en', label: 'English', disabled: auto }], f.target,
+        { hint: auto ? t('תרגום לאנגלית זמין עם מודל משלכם. במצב Auto התצוגה היא לעברית.', 'Translating to English needs your own model. Auto previews in Hebrew.') : '' })
+      + `<div class="field"><label for="source">${t('שפת המקור', 'Source language')}</label><select id="source">${[['auto', t('זיהוי אוטומטי', 'Detect automatically')], ['en', t('אנגלית', 'English')], ['fr', t('צרפתית', 'French')], ['ja', t('יפנית', 'Japanese')]].map(([v, l]) => `<option value="${v}" ${f.source === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>`;
+    let cost = `<div class="wide">${seg('model', t('מודל', 'Model'), [
+        { value: 'auto', label: 'Auto', caption: t('תצוגת ניסיון (מדומה), ללא עלות וללא תרגום אמיתי', 'Preview (simulated), no cost, no real translation') },
+        { value: 'configured', label: t('מודל משלי', 'My own model'), caption: t('מפתח API · תרגום אמיתי בתשלום לספק', 'API key · real translation, paid to the provider') }], f.model)}
+      ${own() ? `<div class="sub-panel">${rolesBlock('form')}<p class="hint">${t('המפתחות נשמרים בזיכרון השרת המקומי לאורך ההרצה; ״לזכור במחשב הזה״ שומר אותם מוצפנים במנהל האישורים של Windows. לא בקובצי הפרויקט ולא בדפדפן.', 'Keys stay in the local server memory for this run; “remember on this computer” stores them encrypted in Windows Credential Manager. Never in project files or the browser.')} <button type="button" class="link-btn" data-act="keys-guide">${t('איך משיגים מפתח?', 'How do I get a key?')} ↗</button></p></div>` : ''}</div>`
+      + `<div class="wide">${seg('quality', t('רמת בדיקה', 'Review level'), [
+        { value: 'fast', label: t('מהיר', 'Fast'), caption: t('ללא בדיקה נוספת', 'No extra review') },
+        { value: 'checked', label: t('נבדק', 'Checked'), caption: t('מקטעים בסיכון + פרקים', 'Risky segments + chapters'), disabled: auto },
+        { value: 'thorough', label: t('מעמיק', 'Thorough'), caption: t('כל מקטע + פרקים', 'Every segment + chapters'), disabled: auto }], f.quality,
+        { hint: auto ? t('נבדק ומעמיק דורשים מודל משלכם. Auto אינו שולח קריאות בדיקה.', 'Checked and Thorough need your own model. Auto sends no review calls.') : t('מהיר אינו שולח קריאות בדיקה נוספות. הבדיקות אינן אישור איכות; הטיוטה נשארת טיוטה.', 'Fast sends no extra review calls. Reviews are not a quality approval; the draft stays a draft.') })}</div>`;
     if (own()) {
       const b = budgetValue(), over = est && b !== null && est.high > b;
-      sections.push(`<div class="field budget-field"><label for="budget">${t('תקציב מרבי למסמך ($)', 'Maximum budget per document ($)')}</label>
-        <div class="budget-row"><span class="dollar" aria-hidden="true">$</span><input id="budget" type="number" required min="0.01" step="0.01" inputmode="decimal" dir="ltr" placeholder="${t('לדוגמה 5', 'e.g. 5')}" value="${esc(f.budget)}" aria-describedby="budget-help"><div class="quick" role="group" aria-label="${t('תקציב מהיר', 'Quick budget')}">${[2, 5, 10, 25].map(v => `<button type="button" class="chip-btn" data-budget="${v}" aria-pressed="${b === v}">$${v}</button>`).join('')}</div></div>
+      cost += `<div class="field budget-field wide"><label for="budget">${t('תקציב מרבי למסמך ($)', 'Maximum budget per document ($)')}</label>
+        <div class="budget-row"><div class="money-input"><span aria-hidden="true">$</span><input id="budget" type="number" required min="0.01" step="0.01" inputmode="decimal" dir="ltr" placeholder="${t('לדוגמה 5', 'e.g. 5')}" value="${esc(f.budget)}" aria-describedby="budget-help"></div><div class="quick" role="group" aria-label="${t('תקציב מהיר', 'Quick budget')}">${[2, 5, 10, 25].map(v => `<button type="button" class="chip-btn" data-budget="${v}" aria-pressed="${b === v}">$${v}</button>`).join('')}</div></div>
         <p id="budget-help" class="hint">${t('חובה במודל משלי: אין תקרה מובנית; המגבלה שלכם נאכפת כעצירה קשיחה.', 'Required for your own model: there is no built-in cap; your limit is enforced as a hard stop.')}</p></div>
-        <div id="estimate" class="estimate${over ? ' over' : ''}">${estimateHtml(est, b)}</div>`);
+        <div id="estimate" class="estimate wide${over ? ' over' : ''}">${estimateHtml(est, b)}</div>`;
     } else {
-      sections.push(`<p class="free-line">${t('Auto: ללא עלות. אין צורך בתקציב או במפתח.', 'Auto: free. No budget or key needed.')}</p>`);
+      cost += `<p class="free-line wide">${t('Auto: ללא עלות. אין צורך בתקציב או במפתח.', 'Auto: free. No budget or key needed.')}</p>`;
     }
-    sections.push(seg('ocr', t('ספרים סרוקים (OCR)', 'Scanned books (OCR)'), [
-      { value: 'vision', label: t('זיהוי מקומי + בדיקת המודל', 'Local OCR + model check'), caption: t('מול תמונת העמוד', 'against the page image'), disabled: auto },
-      { value: 'off', label: t('זיהוי מקומי בלבד', 'Local OCR only'), caption: t('ללא עלות', 'free') }], auto ? 'off' : f.ocr,
-      { hint: t('עמודים בלי טקסט מוטמע מזוהים ב־Tesseract במחשב שלכם. בדיקת המודל משווה כל עמוד לתמונה שלו ומתקנת טעויות ונוסחאות.', 'Pages without embedded text are recognized with Tesseract on your computer. The model check compares each page to its image and fixes errors and formulas.') }));
     const epub = f.file?.kind === 'epub';
-    sections.push(`<div class="field"><label for="font-before">${t('גופן PDF (לפני תרגום)', 'PDF font (before translating)')}</label><select id="font-before" ${epub ? 'disabled aria-describedby="font-note"' : ''}>${FONTS.map(([id, name]) => `<option value="${id}" ${f.fontBefore === id ? 'selected' : ''}>${name}</option>`).join('')}</select><p id="font-note" class="hint">${epub ? t('קובץ EPUB שומר את העיצוב המקורי שלו; הגופן רלוונטי ל־PDF בלבד.', 'An EPUB keeps its own styling; the font applies to PDFs only.') : t('רלוונטי לקובצי PDF בלבד.', 'Applies to PDF files only.')}</p></div>`);
-    sections.push(`<div class="field wide"><label for="terms">${t('המונחים שלי (מחייבים בכל תרגום)', 'My terms (binding in every translation)')} · <span class="muted">${f.target === 'he' ? t('לעברית', 'to Hebrew') : t('לאנגלית', 'to English')}</span></label>
+    const scan = `<div class="wide">${seg('ocr', t('ספרים סרוקים (OCR)', 'Scanned books (OCR)'), [
+        { value: 'vision', label: t('זיהוי מקומי + בדיקת המודל', 'Local OCR + model check'), caption: t('מול תמונת העמוד', 'against the page image'), disabled: auto },
+        { value: 'off', label: t('זיהוי מקומי בלבד', 'Local OCR only'), caption: t('ללא עלות', 'free') }], auto ? 'off' : f.ocr,
+        { hint: t('עמודים בלי טקסט מוטמע מזוהים ב־Tesseract במחשב שלכם. בדיקת המודל משווה כל עמוד לתמונה שלו ומתקנת טעויות ונוסחאות.', 'Pages without embedded text are recognized with Tesseract on your computer. The model check compares each page to its image and fixes errors and formulas.') })}</div>`
+      + `<div class="field"><label for="font-before">${t('גופן PDF (לפני תרגום)', 'PDF font (before translating)')}</label><select id="font-before" ${epub ? 'disabled aria-describedby="font-note"' : ''}>${FONTS.map(([id, name]) => `<option value="${id}" ${f.fontBefore === id ? 'selected' : ''}>${name}</option>`).join('')}</select><p id="font-note" class="hint">${epub ? t('קובץ EPUB שומר את העיצוב המקורי שלו; הגופן רלוונטי ל־PDF בלבד.', 'An EPUB keeps its own styling; the font applies to PDFs only.') : t('רלוונטי לקובצי PDF בלבד.', 'Applies to PDF files only.')}</p></div>`;
+    const termsField = `<div class="field wide"><label for="terms">${t('מחייבים בכל תרגום', 'Binding in every translation')} · <span class="muted">${f.target === 'he' ? t('לעברית', 'to Hebrew') : t('לאנגלית', 'to English')}</span></label>
       <textarea id="terms" rows="4" dir="auto" spellcheck="false" placeholder="無尽蔵性 | inexhaustibility = אי-מיצוי" aria-describedby="terms-help terms-check">${esc(S.terms[f.target])}</textarea>
       <p id="terms-help" class="hint">${t('מונח בכל שורה: מקור = תרגום. צורות נוספות במקור מפרידים ב־|, והערה אחרי #. הרשימה נפרדת לכל שפת יעד, גוברת על בחירות המודל ונבדקת בתרגום.', 'One term per line: source = translation. Separate source variants with |, add a note after #. Kept per target language, overrides the model and is checked in the translation.')}</p>
-      <div class="terms-row"><span id="terms-check" class="terms-check" role="status">${termsStatus(terms)}</span><button type="button" class="btn small secondary" data-act="save-terms">${t('שמירת המונחים', 'Save terms')}</button></div></div>`);
-    return sections.join('');
+      <div class="terms-row"><span id="terms-check" class="terms-check" role="status">${termsStatus(terms)}</span><button type="button" class="btn small secondary" data-act="save-terms">${t('שמירת המונחים', 'Save terms')}</button></div></div>`;
+    return group(t('איך לתרגם', 'How to translate'), how)
+      + group(t('מודל ועלות', 'Model and cost'), cost)
+      + group(t('סריקה וגופן', 'Scans and font'), scan)
+      + group(t('המונחים שלי', 'My terms'), termsField);
   }
   function termsStatus(terms) {
     const saved = S.termsSaved[S.form.target] ? t(' · נשמר', ' · saved') : t(' · לא נשמר', ' · not saved');
@@ -516,12 +519,29 @@
       reviewing: t('בודקים את הפרקים…', 'Reviewing chapters…'), rebuilding: t('בונים את הקובץ…', 'Building the file…'), completed: t('התרגום מוכן.', 'The translation is ready.') }[j.status];
   }
   const shownPct = j => (j.status === 'completed' ? 100 : Math.min(95, Math.floor(j.pct)));
+  // The bindery: a book on a desk under a lamp. A leaf turns over the spine — source on its
+  // front, translation on its back — so each turn reads as "a page goes through, comes out translated".
   function bindery(j) {
     const running = !['paused', 'interrupted', 'completed'].includes(j.status);
-    return `<div class="bindery" data-perch="bindery" data-step="${j.status === 'paused' || j.status === 'interrupted' ? j.lastStage : j.status}" data-running="${running}" aria-hidden="true">
-      <div class="b-window"><i class="b-moon"></i><i class="b-star"></i><i class="b-star two"></i></div><div class="b-lamp"><i class="b-cone"></i></div>
-      <div class="b-book"><div class="b-page b-src"><i></i><i></i><i></i><i></i><i></i></div><div class="b-page b-tgt"><i></i><i></i><i></i><i></i><i></i></div><div class="b-leaf"></div><div class="b-spine"></div></div>
-      <div class="b-letters"><span>A</span><span>文</span><span>ß</span><span>ñ</span><span>א</span></div><div class="b-quill"></div><div class="b-glass"></div><div class="b-stamp">${t('טיוטה', 'DRAFT')}</div><div class="b-desk"></div><div class="b-mug"><i></i></div></div>`;
+    const step = j.status === 'paused' || j.status === 'interrupted' ? j.lastStage : j.status;
+    const lines = (n, cls) => `<div class="lines ${cls}">${Array.from({ length: n }, (_, i) => `<i style="--w:${[92, 84, 96, 70, 88, 94, 62, 90, 80][i % 9]}%"></i>`).join('')}</div>`;
+    const leaf = d => `<div class="leaf" style="--delay:${d}"><div class="face front">${lines(8, 'src')}<span class="folio">${d === '0s' ? 'i' : 'ii'}</span></div><div class="face back">${lines(8, 'tgt')}</div></div>`;
+    return `<div class="bindery" data-perch="bindery" data-step="${step}" data-running="${running}" aria-hidden="true">
+      <div class="bd-glow"></div><div class="bd-window"><i class="bd-moon"></i><i class="bd-star"></i><i class="bd-star two"></i><i class="bd-star three"></i></div>
+      <div class="bd-lamp"><i class="bd-cord"></i><i class="bd-shade"></i><i class="bd-bulb"></i></div>
+      <div class="bd-desk"></div>
+      <div class="bd-stage"><div class="tome">
+        <div class="tome-cover"></div>
+        <div class="tome-page left">${lines(8, 'tgt')}<span class="folio">${j.chapter || 1}</span></div>
+        <div class="tome-page right">${lines(8, 'src')}</div>
+        ${leaf('0s')}${leaf('calc(var(--turn) / -2)')}
+        <div class="tome-gutter"></div>
+        <div class="glyphs"><b>A</b><b>א</b><b>文</b><b>ß</b></div>
+        <div class="bd-quill"><svg viewBox="0 0 34 84"><path d="M30 2C14 14 6 36 9 62l3 8c2-22 9-44 18-68z" fill="#fffaf0" stroke="#cdbb92" stroke-width="1"/><path d="M30 2C20 22 14 44 11 70" fill="none" stroke="#9c7c4a" stroke-width="1.4"/><path d="M14 30l-5 2M16 22l-6 3M13 40l-5 1M12 50l-4 1" stroke="#e4d6b8" stroke-width="1"/><path d="M10 68l1 14 3-13z" fill="#2b1c10"/></svg></div><div class="bd-glass"></div>
+        <div class="bd-checks"><i></i><i></i><i></i></div>
+      </div><div class="bd-stamp">${t('טיוטה', 'DRAFT')}</div></div>
+      <div class="bd-candle"><i></i></div><div class="bd-mug"><i></i><i></i></div>
+    </div>`;
   }
   function jobPage() {
     const j = S.job;

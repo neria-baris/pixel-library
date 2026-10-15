@@ -76,7 +76,8 @@ try {
     await viewport(1440, 900); await load();
     await sleep(3500);
     let positions = [], clear = true, hitsSeen = [];
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 34; i++) { // Behaviour is random; watch up to ~30s for real movement.
+      if (i >= 16 && new Set(positions.map(p => p.slice(0, 2).join(','))).size >= 3) break;
       const c = await js(catClear);
       positions.push([Math.round(c.x), Math.round(c.y), c.pose, c.anchor]);
       if (c.visible && !c.free && c.anchor) { clear = false; }
@@ -151,6 +152,21 @@ try {
     await shot('result-desktop');
     await js(`document.querySelector('[data-act=review]').click()`); await sleep(500);
     await shot('review-desktop');
+  }
+  if (want('bindery')) {
+    // Freeze the page turn at fixed moments so each frame can be reviewed.
+    await viewport(1200, 900); await load('#new'); await sleep(800);
+    await js(`document.querySelector('[data-act=sample]').click()`); await sleep(200);
+    await js(`document.getElementById('translate-button').click()`); await sleep(1200);
+    await js(`window.libraryApp.state.job.pct = 40; window.libraryApp.state.job.status = 'translating'; window.libraryApp.state.job.lastStage = 'translating'; window.libraryApp.render()`); await sleep(400);
+    const box = await js(`(() => { window.scrollTo(0, 0); const r = document.querySelector('.bindery').getBoundingClientRect(); return {x:r.left, y:r.top, width:r.width, height:r.height}; })()`);
+    for (const f of [0.1, 0.3, 0.45, 0.6, 0.75]) {
+      await js(`document.querySelector('.bindery').getAnimations({subtree:true}).forEach(a => { a.pause(); const d = a.effect.getComputedTiming().duration; a.currentTime = ${f} * d - (a.effect.getTiming().delay || 0); })`);
+      await sleep(120);
+      const r = await send('Page.captureScreenshot', { format: 'png', clip: { ...box, scale: 1 } });
+      writeFileSync(join(out, `bindery-${Math.round(f * 100)}.png`), Buffer.from(r.data, 'base64'));
+    }
+    check('bindery has two turning leaves', (await js(`document.querySelectorAll('.bindery .leaf').length`)) === 2);
   }
   if (want('decision')) {
     await viewport(1440, 900); await load('#new'); await sleep(800);
