@@ -41,6 +41,7 @@ function bookShelfScene() {
   const rect = (x,y,w,h,color) => {shapes += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${color}"/>`;};
   const spines = [[110,56,140,'#71473f'],[170,42,164,'#637253'],[216,64,180,'#967751'],[284,38,144,'#40574d'],[326,58,166,'#785442'],[388,44,154,'#a08b59'],[436,66,190,'#5c6556'],[506,46,150,'#80524b']];
   for(const [x,w,h,color] of spines) {
+    shapes += '<g class="shelf-volume">';
     const top = 214-h;
     rect(x,top+4,w,h-4,'#192d24');
     rect(x+4,top,w-8,h,color);
@@ -53,6 +54,7 @@ function bookShelfScene() {
     rect(x+w/2-2,top+56,4,4,'#c1aa72');
     rect(x+w/2-5,top+62,10,2,'#b69c67');
     rect(x+4,top+h-9,4,3,'#b49b6d55');
+    shapes += '</g>';
   }
   rect(86,214,496,6,'#9d8159');
   rect(86,220,496,5,'#1c3027');

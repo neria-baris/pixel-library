@@ -125,6 +125,7 @@
       connection.innerHTML = '<span class="eyebrow">ארגז הכלים</span><h2>המפתח והמודל, בהישג יד.</h2><p>אותם פקדים זמינים תמיד בכותרת האתר. בלי מסע בין תפריטים.</p><div class="settings-workbench row"><button class="workbench-key" data-workbench-key></button><button class="workbench-model" data-workbench-model></button></div><p data-workbench-key-hint></p><button class="btn ghost small" data-action="connection">איך ייראה החיבור?</button>';
     }
     headerStatus();
+    window.libraryMotionPolish?.();
   };
   document.addEventListener('click', event => {
     const keyTrigger = event.target.closest('[data-workbench-key]');

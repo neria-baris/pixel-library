@@ -1,7 +1,7 @@
-﻿param([int]$DebugPort=9332,[string]$BaseUrl='http://127.0.0.1:8817')
+﻿param([int]$DebugPort=9332,[string]$BaseUrl='http://127.0.0.1:8817',[string]$OutputDirectory='docs/design/pixel-library/library-character')
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/cdp_helpers.ps1"
-$evidence=[IO.Path]::GetFullPath((Join-Path (Get-Location) 'docs/design/pixel-library/library-character'))
+$evidence=[IO.Path]::GetFullPath((Join-Path (Get-Location) $OutputDirectory))
 [void][IO.Directory]::CreateDirectory($evidence)
 $results=New-Object Collections.Generic.List[object]
 function Js([string]$Code){Invoke-BrowserJs ('(async()=>{'+$Code+'})()')|Out-Null}
